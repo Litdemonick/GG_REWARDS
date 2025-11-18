@@ -42,6 +42,7 @@ La plataforma está construida bajo un enfoque de gamificación, haciendo que la
 ---
 
 ## 🧱 *Arquitectura del Sistema*
+```bash
 /GG-Rewards
 │── src/
 │ ├── backend/
