@@ -1,0 +1,66 @@
+﻿{% extends 'base.html' %}
+
+{% block title %}Inicio - GG Rewards{% endblock %}
+
+{% block content %}
+<div class='text-center py-12'>
+    <h1 class='text-6xl font-bold mb-4 bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent'>
+        🎮 GG Rewards
+    </h1>
+    <p class='text-2xl text-gray-400 mb-8'>
+        Plataforma de Logros y Recompensas Gamers
+    </p>
+    
+    <div class='grid grid-cols-1 md:grid-cols-4 gap-6 mt-12'>
+        <!-- Steam -->
+        <div class='bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-purple-500 transition'>
+            <div class='text-4xl mb-4'>🎮</div>
+            <h3 class='text-xl font-bold mb-2'>Steam</h3>
+            <p class='text-gray-400'>Conecta tu cuenta de Steam</p>
+        </div>
+        
+        <!-- PlayStation -->
+        <div class='bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-blue-500 transition'>
+            <div class='text-4xl mb-4'>🎯</div>
+            <h3 class='text-xl font-bold mb-2'>PlayStation</h3>
+            <p class='text-gray-400'>Sincroniza tus trofeos PSN</p>
+        </div>
+        
+        <!-- Xbox -->
+        <div class='bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-green-500 transition'>
+            <div class='text-4xl mb-4'>🎪</div>
+            <h3 class='text-xl font-bold mb-2'>Xbox</h3>
+            <p class='text-gray-400'>Logros de Xbox Live</p>
+        </div>
+        
+        <!-- Nintendo -->
+        <div class='bg-gray-800 p-6 rounded-lg border border-gray-700 hover:border-red-500 transition'>
+            <div class='text-4xl mb-4'>🏆</div>
+            <h3 class='text-xl font-bold mb-2'>Nintendo</h3>
+            <p class='text-gray-400'>Switch achievements</p>
+        </div>
+    </div>
+    
+    <div class='mt-12'>
+        <a href='/admin/' class='bg-purple-600 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-purple-700 transition'>
+            Comenzar Ahora
+        </a>
+    </div>
+    
+    <!-- Estadísticas -->
+    <div class='grid grid-cols-1 md:grid-cols-3 gap-6 mt-16'>
+        <div class='bg-gradient-to-br from-purple-600 to-purple-800 p-6 rounded-lg'>
+            <div class='text-4xl font-bold mb-2'>0</div>
+            <p class='text-purple-200'>Usuarios Registrados</p>
+        </div>
+        <div class='bg-gradient-to-br from-blue-600 to-blue-800 p-6 rounded-lg'>
+            <div class='text-4xl font-bold mb-2'>0</div>
+            <p class='text-blue-200'>Trofeos Desbloqueados</p>
+        </div>
+        <div class='bg-gradient-to-br from-pink-600 to-pink-800 p-6 rounded-lg'>
+            <div class='text-4xl font-bold mb-2'>0</div>
+            <p class='text-pink-200'>Juegos Registrados</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
