@@ -1,0 +1,325 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}Twittor{% endblock %}</title>
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'Segoe UI', 'Roboto'] },
+          boxShadow: { 'soft': '0 10px 30px rgba(2,6,23,.08)' },
+          colors: {
+            brand: { 50:'#eef2ff', 100:'#e0e7ff', 500:'#6366f1', 600:'#4f46e5', 700:'#4338ca' }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style type="text/tailwindcss">
+    @layer components {
+      .muted { @apply text-gray-500 dark:text-gray-300; }
+      .btn { @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium transition focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed; }
+      .btn-primary { @apply btn bg-brand-600 text-white hover:bg-brand-700 focus:ring-brand-500; }
+      .btn-ghost { @apply btn bg-white/0 hover:bg-white/20 dark:hover:bg-white/10 border border-white/20; }
+      .btn-outline { @apply btn border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800; }
+      .input { @apply w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2 focus:ring-2 focus:ring-brand-500 focus:border-transparent transition; }
+      .file-input { @apply block w-full text-sm text-gray-600 dark:text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-gray-100 dark:file:bg-gray-800 file:text-gray-700 dark:file:text-gray-200 hover:file:bg-gray-200 dark:hover:file:bg-gray-700; }
+      .card { @apply bg-white/80 dark:bg-gray-900/70 backdrop-blur rounded-2xl shadow-soft border border-white/50 dark:border-white/10; }
+      .chip { @apply inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300; }
+      .link { @apply text-brand-600 hover:text-brand-700 hover:underline dark:text-brand-500 dark:hover:text-brand-400; }
+        .autocomplete-results {
+
+      @apply hidden absolute left-0 right-0 top-full mt-1
+             bg-white dark:bg-gray-800
+             border border-gray-200 dark:border-gray-700
+             rounded-xl shadow z-50
+             max-h-56 overflow-auto;
+    }
+
+    .autocomplete-result {
+      @apply px-3 py-2 cursor-pointer text-sm
+             text-gray-800 dark:text-gray-100
+             border-b border-gray-100 dark:border-gray-700/40;
+    }
+
+    .autocomplete-result:last-child {
+      @apply border-b-0;
+    }
+
+    .autocomplete-result:hover,
+    .autocomplete-result.selected {
+      @apply bg-gray-100 dark:bg-gray-700;
+    }
+
+    .search-container { @apply relative; }
+  }
+html {
+  min-height: 100%;
+  background: linear-gradient(to bottom right, #f8fafc, #ffffff, #e0e7ff);
+}
+
+body {
+  min-height: 100%;
+  background: transparent;
+}
+
+  </style>
+
+
+
+
+  <!-- Bloques extra -->
+  {% block head %}{% endblock %}
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body class="bg-gradient-to-br from-slate-50 via-white to-indigo-50 dark:from-gray-950 dark:via-gray-950 dark:to-gray-900 text-gray-900 dark:text-gray-100">
+
+  <!-- Navbar -->
+  <nav class="sticky top-0 z-20 bg-white/70 dark:bg-gray-900/60 backdrop-blur border-b border-gray-200/60 dark:border-white/5">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center gap-4">
+      <a href="{% url 'timeline' %}" class="flex items-center gap-2 font-extrabold text-lg">
+        <img src="{% static 'logo.svg' %}" class="w-6 h-6" alt="logo">
+        Twittor
+      </a>
+      <form action="{% url 'search' %}" method="get" class="hidden md:flex items-center gap-2 flex-1 max-w-md" id="navbar-search-form">
+          <div class="search-container" style="position: relative; width: 100%;">
+              <input 
+                  type="text" 
+                  name="q" 
+                  placeholder="Buscar publicaciones o usuarios..." 
+                  class="input"
+                  id="navbar-search-input"
+                  autocomplete="off"
+              >
+              <div id="navbar-autocomplete-results" class="autocomplete-results"></div>
+          </div>
+      </form>
+      <div class="flex items-center gap-2 ml-auto">
+        <a href="{% url 'explore' %}" class="chip">Explorar</a>
+        <a href="{% url 'busqueda_avanzada' %}" class="chip">Busqueda Avanzada</a>
+        <a href="{% url 'notifications' %}" class="chip">Notificaciones</a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'profile' user.username %}" class="chip">@{{ user.username }}</a>
+          <form action="{% url 'logout' %}" method="post" class="inline">
+            {% csrf_token %}
+            <button class="btn-outline">Salir</button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn-outline">Entrar</a>
+          <a href="{% url 'signup' %}" class="btn-primary">Crear cuenta</a>
+        {% endif %}
+        <button id="themeToggle" class="btn-ghost" title="Tema">
+          <svg id="iconSun" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M12 4V2M12 22v-2M4.93 4.93 3.52 3.52M20.48 20.48l-1.41-1.41M4 12H2m20 0h-2M4.93 19.07 3.52 20.48M20.48 3.52l-1.41 1.41"/>
+            <circle cx="12" cy="12" r="4"/>
+          </svg>
+          <svg id="iconMoon" class="w-5 h-5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenido -->
+  <main class="max-w-6xl mx-auto p-4 min-h-[90vh] flex flex-col">
+
+    {% if messages %}
+      <div class="space-y-2 mb-4">
+        {% for m in messages %}
+          <div class="p-3 rounded-lg {{ m.tags }} bg-blue-100 text-blue-900">{{ m }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+        <!-- Paginación global -->
+{% if page_obj.has_other_pages %}
+  <div class="flex justify-center mt-6 space-x-2">
+    {% if page_obj.has_previous %}
+      <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ page_obj.previous_page_number }}" class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded">Anterior</a>
+    {% endif %}
+    <span class="px-3 py-1 bg-blue-600 text-white rounded">Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a href="?{% if request.GET.q %}q={{ request.GET.q }}&{% endif %}page={{ page_obj.next_page_number }}" class="px-3 py-1 bg-gray-200 dark:bg-gray-700 rounded">Siguiente</a>
+    {% endif %}
+  </div>
+{% endif %}
+
+    
+  </main>
+
+  <footer class="text-center text-xs text-gray-500 py-8">
+    Hecho con <span class="text-brand-600">Django</span> + <span class="text-brand-600">Tailwind</span>. Proyecto educativo.
+  </footer>
+
+  <script src="{% static 'app.js' %}"></script>
+  <script src="{% static 'js/autocomplete.js' %}"></script>
+
+  <script>
+  // Autocomplete para la barra de navegación
+  class NavbarAutocomplete {
+      constructor(inputId, resultsId) {
+          this.input = document.getElementById(inputId);
+          this.resultsContainer = document.getElementById(resultsId);
+          this.selectedIndex = -1;
+          this.results = [];
+          
+          if (this.input && this.resultsContainer) {
+              this.init();
+          }
+      }
+      
+      init() {
+          this.input.addEventListener('input', (e) => {
+              this.handleInput(e.target.value);
+          });
+          
+          this.input.addEventListener('keydown', (e) => {
+              this.handleKeyDown(e);
+          });
+          
+          document.addEventListener('click', (e) => {
+              if (!this.resultsContainer.contains(e.target) && e.target !== this.input) {
+                  this.hideResults();
+              }
+          });
+      }
+      
+async handleInput(query) {
+  if (query.length < 1) { this.hideResults(); return; }
+
+  let endpoint, q = query;
+  if (q.startsWith('@')) {
+    endpoint = "{% url 'autocomplete_mention' %}";
+    q = q.slice(1);
+  } else if (q.startsWith('#')) {
+    endpoint = "{% url 'autocomplete_hashtag' %}";
+    q = q.slice(1);
+  } else {
+    // sin @ o # no sugerimos (búsqueda normal)
+    this.hideResults();
+    return;
+  }
+
+  try {
+    const res = await fetch(`${endpoint}?q=${encodeURIComponent(q)}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    this.results = (data.results || []).map(r => r.value || r); // soporta {value,label} o string
+    this.showResults();
+  } catch (e) {
+    console.error('Error autocomplete navbar:', e);
+    this.hideResults();
+  }
+}
+
+      
+      showResults() {
+          if (this.results.length === 0) {
+              this.hideResults();
+              return;
+          }
+          
+          this.resultsContainer.innerHTML = '';
+this.results.forEach((r) => {
+  const value = typeof r === 'string' ? r : r.value;
+  const label = typeof r === 'string' ? r : (r.label || r.value);
+
+  const div = document.createElement('div');
+  div.className = 'autocomplete-result';
+  div.textContent = label;       // se ve el label
+  div.dataset.value = value;     // se usa el value para navegar
+
+  div.addEventListener('click', () => {
+    this.selectResult(value);
+  });
+  this.resultsContainer.appendChild(div);
+});
+
+          
+          this.resultsContainer.style.display = 'block';
+          this.selectedIndex = -1;
+      }
+      
+      hideResults() {
+          this.resultsContainer.style.display = 'none';
+          this.selectedIndex = -1;
+      }
+      
+      handleKeyDown(e) {
+          switch(e.key) {
+              case 'ArrowDown':
+                  e.preventDefault();
+                  this.navigateResults(1);
+                  break;
+              case 'ArrowUp':
+                  e.preventDefault();
+                  this.navigateResults(-1);
+                  break;
+              case 'Enter':
+                  if (this.selectedIndex >= 0) {
+                      e.preventDefault();
+                      this.selectResult(this.results[this.selectedIndex]);
+                  }
+                  break;
+              case 'Escape':
+                  this.hideResults();
+                  break;
+          }
+      }
+      
+      navigateResults(direction) {
+          if (this.results.length === 0) return;
+          
+          if (this.selectedIndex >= 0) {
+              this.resultsContainer.children[this.selectedIndex].classList.remove('selected');
+          }
+          
+          this.selectedIndex += direction;
+          
+          if (this.selectedIndex < 0) {
+              this.selectedIndex = this.results.length - 1;
+          } else if (this.selectedIndex >= this.results.length) {
+              this.selectedIndex = 0;
+          }
+          
+          this.resultsContainer.children[this.selectedIndex].classList.add('selected');
+          
+          this.resultsContainer.children[this.selectedIndex].scrollIntoView({
+              block: 'nearest'
+          });
+      }
+      
+    selectResult(value) {
+      if (value.startsWith('@')) {
+        window.location.href = `/u/${value.slice(1)}/`;
+      } else if (value.startsWith('#')) {
+        window.location.href = `/tag/${value.slice(1)}/`;
+      } else {
+        // fallback por si algún día permites texto normal
+        this.input.value = value;
+        this.input.form.submit();
+      }
+    }
+
+  }
+
+  // Inicializar cuando el DOM esté listo
+  document.addEventListener('DOMContentLoaded', function() {
+      // Autocomplete para navbar
+      new NavbarAutocomplete('navbar-search-input', 'navbar-autocomplete-results');
+  });
+  </script>
+  
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

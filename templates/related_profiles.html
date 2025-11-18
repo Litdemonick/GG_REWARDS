@@ -1,0 +1,31 @@
+{% load static %}
+
+<!-- Bloque de Perfiles Relacionados -->
+<div class="card p-4">
+  <h2 class="font-semibold text-lg mb-3 text-gray-900 dark:text-white">Perfiles Sugeridos</h2>
+  <div class="space-y-3">
+    {% if related_profiles %}
+      {% for profile in related_profiles %}
+        <a href="{% url 'profile' profile.username %}" class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+          {% if profile.userprofile.avatar %}
+            <img src="{{ profile.userprofile.avatar.url }}" class="w-10 h-10 rounded-full object-cover" alt="@{{ profile.username }}">
+          {% else %}
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center font-semibold text-white">
+              {{ profile.username|first|upper }}
+            </div>
+          {% endif %}
+          <div class="flex-1 min-w-0">
+            <p class="font-semibold text-sm text-gray-900 dark:text-white truncate">@{{ profile.username }}</p>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              {{ profile.userprofile.followers.count }} seguidores
+            </p>
+          </div>
+        </a>
+      {% endfor %}
+    {% else %}
+      <p class="text-sm text-gray-500 dark:text-gray-400 text-center py-2">
+        No hay perfiles sugeridos disponibles
+      </p>
+    {% endif %}
+  </div>
+</div>
