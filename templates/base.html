@@ -1,52 +1,213 @@
-﻿# Primero crea la carpeta templates si no existe
-New-Item -ItemType Directory -Force -Path "templates"
-New-Item -ItemType Directory -Force -Path "templates\users"
-
-# Crea el archivo base.html
-@"
+﻿{% load static %}
 <!DOCTYPE html>
-<html lang='es'>
+<!-- Agregamos id y class para controlar el modo oscuro desde aquí -->
+<html lang="es" class="dark">
 <head>
-    <meta charset='UTF-8'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>{% block title %}GG Rewards{% endblock %}</title>
-    <script src='https://cdn.tailwindcss.com'></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GG Rewards - Level Up{% endblock %}</title>
+    
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Configuración Tailwind -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        gaming: {
+                            dark: '#0f172a',
+                            card: '#1e293b',
+                            primary: '#8b5cf6',
+                            secondary: '#ec4899',
+                        }
+                    },
+                    spacing: {
+                        '30': '7.5rem',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'text-slide': 'text-slide 8s cubic-bezier(0.83, 0, 0.17, 1) infinite',
+                        'rainbow': 'rainbow 4s linear infinite', // Ajustado a 4s para suavidad
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        'text-slide': {
+                            '0%, 26.66%': { transform: 'translateY(0%)' },
+                            '33.33%, 60%': { transform: 'translateY(-25%)' },
+                            '66.66%, 93.33%': { transform: 'translateY(-50%)' },
+                            '100%': { transform: 'translateY(-75%)' },
+                        },
+                        // KEYFRAMES DEL ARCOIRIS CORREGIDOS
+                        // Mueve el fondo de izquierda (0%) a derecha (100%)
+                        'rainbow': {
+                            '0%': { 'background-position': '0% 50%' },
+                            '100%': { 'background-position': '100% 50%' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Estilos base dinámicos */
+        body {
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* MODO CLARO */
+        body {
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+
+        /* MODO OSCURO */
+        .dark body {
+            background-color: #0f172a;
+            color: white;
+        }
+
+        /* NAVBAR CRISTAL - MODO CLARO */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* NAVBAR CRISTAL - MODO OSCURO */
+        .dark .glass-nav {
+            background: rgba(15, 23, 42, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Gradiente de texto */
+        .text-gradient {
+            background: linear-gradient(to right, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
 </head>
-<body class='bg-gray-900 text-white'>
-    <!-- Navbar -->
-    <nav class='bg-gray-800 border-b border-gray-700'>
-        <div class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8'>
-            <div class='flex justify-between h-16'>
-                <div class='flex items-center'>
-                    <a href='/' class='text-2xl font-bold text-purple-500'>🎮 GG Rewards</a>
+<body class="antialiased selection:bg-purple-500 selection:text-white">
+
+    <!-- NAVBAR -->
+    <nav class="fixed top-0 w-full z-50 glass-nav transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-30 px-4 py-9">
+                
+                <!-- LOGO COMPLETO -->
+                <div class="flex-shrink-0 flex flex-col items-center justify-center cursor-pointer hover:opacity-90 transition-opacity group py-1" onclick="window.location.href='/'">
+                    
+                    <svg width="100" height="50" viewBox="0 0 110 50" fill="none" xmlns="http://www.w3.org/2000/svg" class="drop-shadow-[0_0_10px_rgba(168,85,247,0.6)] group-hover:drop-shadow-[0_0_15px_rgba(236,72,153,0.8)] transition-all mb-1">
+                        <defs>
+                            <linearGradient id="logoGradient" x1="0" y1="0" x2="100" y2="0" gradientUnits="userSpaceOnUse">
+                                <stop offset="0%" stop-color="#a855f7" />
+                                <stop offset="100%" stop-color="#ec4899" />
+                            </linearGradient>
+                        </defs>
+                        
+                        <path d="M40 5 H10 L2 20 V35 L10 45 H35 L40 40 V25 H20 L25 35 H15 L12 30 V20 L15 15 H35 L30 25" 
+                              stroke="url(#logoGradient)" 
+                              stroke-width="5" 
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
+                              
+                        <path d="M90 5 H60 L52 20 V35 L60 45 H85 L90 40 V25 H70 L75 35 H65 L62 30 V20 L65 15 H85 L80 25" 
+                              stroke="url(#logoGradient)" 
+                              stroke-width="5" 
+                              stroke-linecap="round" 
+                              stroke-linejoin="round" />
+                    </svg>
+                    
+                    <span class="text-[0.85rem] font-bold tracking-[0.5em] leading-none text-gray-900 dark:text-white uppercase mt-1">
+                        Rewards
+                    </span>
                 </div>
-                <div class='flex items-center space-x-4'>
-                    <a href='/' class='hover:text-purple-400'>Inicio</a>
-                    <a href='/rankings/' class='hover:text-purple-400'>Rankings</a>
-                    <a href='/trophies/' class='hover:text-purple-400'>Trofeos</a>
-                    {% if user.is_authenticated %}
-                        <a href='/profile/' class='hover:text-purple-400'>Mi Perfil</a>
-                        <a href='/admin/' class='hover:text-purple-400'>Admin</a>
-                    {% else %}
-                        <a href='/admin/login/' class='bg-purple-600 px-4 py-2 rounded hover:bg-purple-700'>Login</a>
-                    {% endif %}
+                
+                <!-- LINKS ESCRITORIO -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-center space-x-10">
+                        <a href="/" class="hover:text-purple-500 transition-colors px-3 py-2 rounded-md text-base font-medium">Inicio</a>
+                        <a href="#" class="hover:text-purple-500 transition-colors px-3 py-2 rounded-md text-base font-medium">Juegos</a>
+                        <a href="#" class="hover:text-purple-500 transition-colors px-3 py-2 rounded-md text-base font-medium">Rankings</a>
+                        
+                        <a href="#" class="bg-purple-600 hover:bg-purple-700 text-white px-7 py-3 rounded-full font-bold transition-all hover:shadow-[0_0_20px_rgba(139,92,246,0.6)] text-base">
+                            Login
+                        </a>
+
+                        <button id="theme-toggle" class="w-12 h-12 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center transition-all hover:scale-110 focus:outline-none">
+                            <i id="theme-icon" class="fa-solid fa-sun text-yellow-500 text-xl"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Contenido -->
-    <main class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8'>
+    <!-- MAIN -->
+    <main class="min-h-screen">
         {% block content %}
         {% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class='bg-gray-800 border-t border-gray-700 mt-12'>
-        <div class='max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-400'>
-            <p>&copy; 2025 GG Rewards - Los 5 Furiosos</p>
+    <!-- FOOTER -->
+    <footer class="border-t border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-900 mt-20 py-10 transition-colors duration-300">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-600 dark:text-gray-400">
+            <p>&copy; 2025 GG Rewards. Proyecto "Los 5 Furiosos".</p>
         </div>
     </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        const toggleBtn = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-icon');
+        const htmlElement = document.documentElement;
+
+        if (localStorage.getItem('theme') === 'dark' || 
+           (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            htmlElement.classList.add('dark');
+            updateIcon(true);
+        } else {
+            htmlElement.classList.remove('dark');
+            updateIcon(false);
+        }
+
+        function updateIcon(isDark) {
+            if (isDark) {
+                themeIcon.classList.remove('fa-moon', 'text-purple-600');
+                themeIcon.classList.add('fa-sun', 'text-yellow-500');
+            } else {
+                themeIcon.classList.remove('fa-sun', 'text-yellow-500');
+                themeIcon.classList.add('fa-moon', 'text-purple-600');
+            }
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                updateIcon(false);
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                updateIcon(true);
+            }
+        });
+    </script>
 </body>
 </html>
-"@ | Out-File -FilePath "templates\base.html" -Encoding utf8
