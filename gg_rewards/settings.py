@@ -18,12 +18,19 @@ INSTALLED_APPS = [
     # Third party apps
     'rest_framework',
     'corsheaders',
+    'sass_processor',  # SASS processor
+    'compressor',      # Compressor (opcional)
     
     # Local apps
     'apps.users',
     'apps.trophies',
     'apps.rankings',
     'apps.api_integrations',
+]
+
+SASS_PROCESSOR_ROOT = BASE_DIR / 'static'
+SASS_PROCESSOR_INCLUDE_DIRS = [
+    BASE_DIR / 'static' / 'scss',
 ]
 
 MIDDLEWARE = [
@@ -76,10 +83,29 @@ TIME_ZONE = 'America/Panama'
 USE_I18N = True
 USE_TZ = True
 
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+# SASS Configuration
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder',  # SASS finder
+]
+
+SASS_PROCESSOR_ROOT = BASE_DIR / 'static'
+SASS_PROCESSOR_INCLUDE_DIRS = [
+    str(BASE_DIR / 'static' / 'scss'),
+    str(BASE_DIR / 'static' / 'scss' / 'utils'),
+    str(BASE_DIR / 'static' / 'scss' / 'components'),
+]
+SASS_PRECISION = 8
+SASS_OUTPUT_STYLE = 'compressed' if not DEBUG else 'nested'
+SASS_PROCESSOR_ENABLED = True
+SASS_OUTPUT_STYLE = 'compressed'
+# Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 

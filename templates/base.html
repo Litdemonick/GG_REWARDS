@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿# Primero crea la carpeta templates si no existe
+New-Item -ItemType Directory -Force -Path "templates"
+New-Item -ItemType Directory -Force -Path "templates\users"
+
+# Crea el archivo base.html
+@"
+<!DOCTYPE html>
 <html lang='es'>
 <head>
     <meta charset='UTF-8'>
@@ -43,3 +49,4 @@
     </footer>
 </body>
 </html>
+"@ | Out-File -FilePath "templates\base.html" -Encoding utf8
