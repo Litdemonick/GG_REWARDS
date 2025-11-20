@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+# Importamos el modelo Profile que crearemos
+from .models import Profile
 
 def home(request):
     '''Página de inicio'''
@@ -14,9 +16,13 @@ def home(request):
 @login_required
 def profile(request):
     '''Perfil del usuario'''
+    # Nos aseguramos de que cada usuario tenga un perfil
+    user_profile, created = Profile.objects.get_or_create(user=request.user)
+
     context = {
         'title': 'Mi Perfil',
-        'user': request.user
+        'user': request.user,
+        'profile': user_profile
     }
     return render(request, 'users/profile.html', context)
 
@@ -88,3 +94,31 @@ def logout_view(request):
     # AQUÍ ESTÁ EL ERROR QUE TE SALÍA. 
     # Debe ser 'users:login', no 'login'
     return redirect('users:home')
+
+@login_required
+def update_profile(request):
+    '''Vista para actualizar el perfil desde el modal'''
+    if request.method == 'POST':
+        user = request.user
+        user_profile = Profile.objects.get(user=user)
+
+        # Actualizar datos de User
+        new_username = request.POST.get('username')
+        new_email = request.POST.get('email')
+
+        if new_username and new_username != user.username:
+            if User.objects.filter(username=new_username).exclude(pk=user.pk).exists():
+                messages.error(request, 'Ese nombre de usuario ya está en uso.')
+                return redirect('users:profile')
+            user.username = new_username
+
+        user.email = new_email
+        user.save()
+
+        # Actualizar foto de perfil en Profile
+        if 'profile_picture' in request.FILES:
+            user_profile.avatar = request.FILES['profile_picture']
+            user_profile.save()
+
+        messages.success(request, '¡Perfil actualizado con éxito!')
+    return redirect('users:profile')
