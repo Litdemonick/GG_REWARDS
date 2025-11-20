@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'apps.trophies',
     'apps.rankings',
     'apps.api_integrations',
+    'apps.games',
 ]
 
 MIDDLEWARE = [

@@ -13,6 +13,7 @@ urlpatterns = [
     path('trophies/', include('apps.trophies.urls')),
     path('rankings/', include('apps.rankings.urls')),
     path('api/', include('apps.api_integrations.urls')),
+    path('games/', include('apps.games.urls')),
 ]
 
 # Configuración para servir archivos estáticos y media en modo DEBUG
