@@ -44,6 +44,42 @@ def populate_games():
             "genre": "Acción y Aventura",
             "rating": 4.9,
             "release_date": date(2022, 11, 9)
+        },
+        {
+            "title": "The Legend of Zelda: Tears of the Kingdom",
+            "description": "Una aventura épica a través de la tierra y los cielos de Hyrule te espera en The Legend of Zelda: Tears of the Kingdom para Nintendo Switch.",
+            "image_url": "https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_1240/b_white/f_auto/q_auto/ncom/software/switch/70010000063714/8461c4d967516b743584888e057de3bd5b74a29e95899787116848950c5f75fd",
+            "link_url": "https://www.nintendo.com/store/products/the-legend-of-zelda-tears-of-the-kingdom-switch/",
+            "genre": "Acción y Aventura",
+            "rating": 4.9,
+            "release_date": date(2023, 5, 12)
+        },
+        {
+            "title": "Baldur's Gate 3",
+            "description": "Reúne a tu grupo y regresa a los Reinos Olvidados en una historia de compañerismo y traición, sacrificio y supervivencia, y la atracción del poder absoluto.",
+            "image_url": "https://image.api.playstation.com/vulcan/ap/rnd/202302/2321/3098481c9164bb5f33069b37e49fba1a572ea3b8ef721bf1.png",
+            "link_url": "https://baldursgate3.game/",
+            "genre": "RPG",
+            "rating": 4.9,
+            "release_date": date(2023, 8, 3)
+        },
+        {
+            "title": "Final Fantasy VII Rebirth",
+            "description": "El viaje hacia lo desconocido continúa. Tras escapar de la ciudad distópica de Midgar, Cloud y sus amigos se embarcan en un viaje a través del planeta.",
+            "image_url": "https://image.api.playstation.com/vulcan/ap/rnd/202309/1416/5f40501d378c98203086e06d1277c4357780696850358496.png",
+            "link_url": "https://ffvii.square-enix-games.com/games/rebirth/",
+            "genre": "RPG",
+            "rating": 4.8,
+            "release_date": date(2024, 2, 29)
+        },
+        {
+            "title": "Black Myth: Wukong",
+            "description": "Black Myth: Wukong es un juego de rol de acción basado en la mitología china. La historia se basa en Viaje al Oeste, una de las Cuatro Grandes Novelas Clásicas de la literatura china.",
+            "image_url": "https://image.api.playstation.com/vulcan/ap/rnd/202406/1704/641664190294596093654350261562854348690910836835.png",
+            "link_url": "https://www.heishenhua.com/",
+            "genre": "RPG de Acción",
+            "rating": 4.7,
+            "release_date": date(2024, 8, 20)
         }
     ]
 

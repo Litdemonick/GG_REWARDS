@@ -5,11 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 # Importamos el modelo Profile que crearemos
 from .models import Profile
+from apps.games.models import Game
 
 def home(request):
     '''Página de inicio'''
     context = {
         'title': 'GG Rewards - Inicio',
+        'games': Game.objects.all()
     }
     return render(request, 'home.html', context)
 
