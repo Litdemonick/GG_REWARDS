@@ -4,56 +4,57 @@
 
 {% block content %}
 <div class='max-w-4xl mx-auto'>
-    <h1 class='text-4xl font-bold mb-8'>👤 Mi Perfil</h1>
+    <h1 class='text-4xl font-bold mb-8 text-gray-900 dark:text-white'>👤 Mi Perfil</h1>
     
-    <div class='bg-gray-800 rounded-lg p-8 border border-gray-700'>
+    <div class='bg-white dark:bg-gray-800 rounded-lg p-8 border border-gray-200 dark:border-gray-700'>
         <div class='flex items-center space-x-6 mb-8'>
-            <div class='w-24 h-24 bg-purple-600 rounded-full flex items-center justify-center text-4xl'>
+            <div class='w-24 h-24 bg-purple-100 dark:bg-purple-600 rounded-full flex items-center justify-center text-4xl text-purple-600 dark:text-white'>
                 {{ user.username|slice:':1'|upper }}
             </div>
             <div>
-                <h2 class='text-3xl font-bold'>{{ user.username }}</h2>
-                <p class='text-gray-400'>{{ user.email }}</p>
+                <h2 class='text-3xl font-bold text-gray-900 dark:text-white'>{{ user.username }}</h2>
+                <p class='text-gray-600 dark:text-gray-400'>{{ user.email }}</p>
+                <a href="{% url 'users:logout' %}" class="text-sm text-red-500 hover:underline">Cerrar sesión</a>
             </div>
         </div>
         
         <div class='grid grid-cols-1 md:grid-cols-3 gap-6 mt-8'>
-            <div class='bg-gray-900 p-6 rounded-lg text-center'>
-                <div class='text-3xl font-bold text-purple-400'>Nivel 1</div>
-                <p class='text-gray-400 mt-2'>Nivel Actual</p>
+            <div class='bg-gray-50 dark:bg-gray-900 p-6 rounded-lg text-center'>
+                <div class='text-3xl font-bold text-purple-600 dark:text-purple-400'>Nivel 1</div>
+                <p class='text-gray-600 dark:text-gray-400 mt-2'>Nivel Actual</p>
             </div>
-            <div class='bg-gray-900 p-6 rounded-lg text-center'>
-                <div class='text-3xl font-bold text-blue-400'>0 XP</div>
-                <p class='text-gray-400 mt-2'>Experiencia</p>
+            <div class='bg-gray-50 dark:bg-gray-900 p-6 rounded-lg text-center'>
+                <div class='text-3xl font-bold text-blue-600 dark:text-blue-400'>0 XP</div>
+                <p class='text-gray-600 dark:text-gray-400 mt-2'>Experiencia</p>
             </div>
-            <div class='bg-gray-900 p-6 rounded-lg text-center'>
-                <div class='text-3xl font-bold text-pink-400'>0 🏆</div>
-                <p class='text-gray-400 mt-2'>Trofeos</p>
+            <div class='bg-gray-50 dark:bg-gray-900 p-6 rounded-lg text-center'>
+                <div class='text-3xl font-bold text-pink-600 dark:text-pink-400'>0 🏆</div>
+                <p class='text-gray-600 dark:text-gray-400 mt-2'>Trofeos</p>
             </div>
         </div>
         
         <div class='mt-8'>
-            <h3 class='text-xl font-bold mb-4'>Plataformas Conectadas</h3>
+            <h3 class='text-xl font-bold mb-4 text-gray-900 dark:text-white'>Plataformas Conectadas</h3>
             <div class='grid grid-cols-2 md:grid-cols-4 gap-4'>
-                <div class='bg-gray-900 p-4 rounded-lg text-center'>
+                <div class='bg-gray-50 dark:bg-gray-900 p-4 rounded-lg text-center'>
                     <div class='text-2xl mb-2'>🎮</div>
-                    <p class='text-sm text-gray-400'>Steam</p>
-                    <p class='text-xs text-red-400'>No conectado</p>
+                    <p class='text-sm text-gray-600 dark:text-gray-400'>Steam</p>
+                    <p class='text-xs text-red-600 dark:text-red-400'>No conectado</p>
                 </div>
-                <div class='bg-gray-900 p-4 rounded-lg text-center'>
+                <div class='bg-gray-50 dark:bg-gray-900 p-4 rounded-lg text-center'>
                     <div class='text-2xl mb-2'>🎯</div>
-                    <p class='text-sm text-gray-400'>PlayStation</p>
-                    <p class='text-xs text-red-400'>No conectado</p>
+                    <p class='text-sm text-gray-600 dark:text-gray-400'>PlayStation</p>
+                    <p class='text-xs text-red-600 dark:text-red-400'>No conectado</p>
                 </div>
-                <div class='bg-gray-900 p-4 rounded-lg text-center'>
+                <div class='bg-gray-50 dark:bg-gray-900 p-4 rounded-lg text-center'>
                     <div class='text-2xl mb-2'>🎪</div>
-                    <p class='text-sm text-gray-400'>Xbox</p>
-                    <p class='text-xs text-red-400'>No conectado</p>
+                    <p class='text-sm text-gray-600 dark:text-gray-400'>Xbox</p>
+                    <p class='text-xs text-red-600 dark:text-red-400'>No conectado</p>
                 </div>
-                <div class='bg-gray-900 p-4 rounded-lg text-center'>
+                <div class='bg-gray-50 dark:bg-gray-900 p-4 rounded-lg text-center'>
                     <div class='text-2xl mb-2'>🏆</div>
-                    <p class='text-sm text-gray-400'>Nintendo</p>
-                    <p class='text-xs text-red-400'>No conectado</p>
+                    <p class='text-sm text-gray-600 dark:text-gray-400'>Nintendo</p>
+                    <p class='text-xs text-red-600 dark:text-red-400'>No conectado</p>
                 </div>
             </div>
         </div>

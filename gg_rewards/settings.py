@@ -1,12 +1,18 @@
 ﻿from pathlib import Path
 import os
 
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'dev-key-change-in-prod'
+
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
 ALLOWED_HOSTS = []
 
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -18,19 +24,12 @@ INSTALLED_APPS = [
     # Third party apps
     'rest_framework',
     'corsheaders',
-    'sass_processor',  # SASS processor
-    'compressor',      # Compressor (opcional)
     
     # Local apps
     'apps.users',
     'apps.trophies',
     'apps.rankings',
     'apps.api_integrations',
-]
-
-SASS_PROCESSOR_ROOT = BASE_DIR / 'static'
-SASS_PROCESSOR_INCLUDE_DIRS = [
-    BASE_DIR / 'static' / 'scss',
 ]
 
 MIDDLEWARE = [
@@ -64,6 +63,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'gg_rewards.wsgi.application'
 
+# Database
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -71,6 +71,7 @@ DATABASES = {
     }
 }
 
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -78,6 +79,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+# Internationalization
 LANGUAGE_CODE = 'es-pa'
 TIME_ZONE = 'America/Panama'
 USE_I18N = True
@@ -88,27 +90,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# SASS Configuration
-STATICFILES_FINDERS = [
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'sass_processor.finders.CssFinder',  # SASS finder
-]
-
-SASS_PROCESSOR_ROOT = BASE_DIR / 'static'
-SASS_PROCESSOR_INCLUDE_DIRS = [
-    str(BASE_DIR / 'static' / 'scss'),
-    str(BASE_DIR / 'static' / 'scss' / 'utils'),
-    str(BASE_DIR / 'static' / 'scss' / 'components'),
-]
-SASS_PRECISION = 8
-SASS_OUTPUT_STYLE = 'compressed' if not DEBUG else 'nested'
-SASS_PROCESSOR_ENABLED = True
-SASS_OUTPUT_STYLE = 'compressed'
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS settings
