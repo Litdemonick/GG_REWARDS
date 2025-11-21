@@ -3,9 +3,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-# Importamos el modelo Profile que crearemos
 from .models import Profile
 from apps.games.models import Game
+from django.urls import reverse
+from urllib.parse import urlencode
+from apps.api_integrations.steam_service import validate_steam_openid, get_owned_games, get_game_achievements
 
 def home(request):
     '''Página de inicio'''
@@ -21,17 +23,56 @@ def profile(request):
     # Nos aseguramos de que cada usuario tenga un perfil
     user_profile, created = Profile.objects.get_or_create(user=request.user)
 
+    steam_games = []
+    if user_profile.steam_id:
+        steam_games = get_owned_games(user_profile.steam_id)
+        # Opcional: Limitar a los top 10 juegos con más horas
+        steam_games = steam_games[:10]
+
     context = {
         'title': 'Mi Perfil',
         'user': request.user,
-        'profile': user_profile
+        'profile': user_profile,
+        'steam_games': steam_games
     }
     return render(request, 'users/profile.html', context)
+
+@login_required
+def steam_login(request):
+    """Inicia el flujo de autenticación con Steam OpenID"""
+    steam_openid_url = 'https://steamcommunity.com/openid/login'
+    params = {
+        'openid.ns': 'http://specs.openid.net/auth/2.0',
+        'openid.mode': 'checkid_setup',
+        'openid.return_to': request.build_absolute_uri(reverse('users:steam_callback')),
+        'openid.realm': request.build_absolute_uri('/'),
+        'openid.identity': 'http://specs.openid.net/auth/2.0/identifier_select',
+        'openid.claimed_id': 'http://specs.openid.net/auth/2.0/identifier_select',
+    }
+    return redirect(f"{steam_openid_url}?{urlencode(params)}")
+
+@login_required
+def steam_callback(request):
+    """Maneja el retorno de Steam después del login"""
+    params = request.GET.dict()
+    
+    steam_id = validate_steam_openid(params)
+    
+    if steam_id:
+        # Guardar Steam ID en el perfil del usuario
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        profile.steam_id = steam_id
+        profile.save()
+        messages.success(request, '¡Cuenta de Steam vinculada exitosamente!')
+    else:
+        messages.error(request, 'Error al vincular la cuenta de Steam.')
+        
+    return redirect('users:profile')
 
 def register_view(request):
     '''Vista para la página de registro independiente'''
     if request.user.is_authenticated:
-        return redirect('users:home') # IMPORTANTE: users:home
+        return redirect('users:home')
 
     if request.method == 'POST':
         username = request.POST.get('username')
@@ -56,7 +97,7 @@ def register_view(request):
             user.save()
             login(request, user)
             messages.success(request, f'¡Bienvenido, {username}!')
-            return redirect('users:home') # IMPORTANTE: users:home
+            return redirect('users:home')
         except Exception as e:
             messages.error(request, 'Ocurrió un error al crear la cuenta.')
             return render(request, 'users/register.html')
@@ -66,7 +107,7 @@ def register_view(request):
 def login_view(request):
     '''Vista para la página de login independiente'''
     if request.user.is_authenticated:
-        return redirect('users:home') # IMPORTANTE: users:home
+        return redirect('users:home')
 
     if request.method == 'POST':
         username_or_email = request.POST.get('username')
@@ -83,7 +124,7 @@ def login_view(request):
 
         if user is not None:
             login(request, user)
-            return redirect('users:home') # IMPORTANTE: users:home
+            return redirect('users:home')
         else:
             messages.error(request, 'Credenciales inválidas. Intenta de nuevo.')
     
@@ -93,8 +134,6 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     messages.info(request, 'Has cerrado sesión.')
-    # AQUÍ ESTÁ EL ERROR QUE TE SALÍA. 
-    # Debe ser 'users:login', no 'login'
     return redirect('users:home')
 
 @login_required
@@ -124,3 +163,28 @@ def update_profile(request):
 
         messages.success(request, '¡Perfil actualizado con éxito!')
     return redirect('users:profile')
+
+@login_required
+def game_achievements(request, app_id):
+    """Muestra los logros de un juego específico"""
+    user_profile = Profile.objects.get(user=request.user)
+    
+    if not user_profile.steam_id:
+        messages.error(request, 'Debes vincular tu cuenta de Steam primero.')
+        return redirect('users:profile')
+
+    achievements, error_msg = get_game_achievements(user_profile.steam_id, app_id)
+    
+    # Intentar obtener nombre del juego (esto es un hack porque la API de logros no devuelve el nombre del juego directamente fácil)
+    # En una app real, deberíamos tener una base de datos de juegos o hacer otra call a la API.
+    # Por ahora lo pasamos como parámetro GET o simplemente mostramos "Logros del Juego"
+    game_name = request.GET.get('game_name', 'Juego')
+
+    context = {
+        'title': f'Logros - {game_name}',
+        'achievements': achievements,
+        'error_msg': error_msg,
+        'game_name': game_name,
+        'app_id': app_id
+    }
+    return render(request, 'users/game_achievements.html', context)

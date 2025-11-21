@@ -8,6 +8,7 @@ def user_directory_path(instance, filename):
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to=user_directory_path, default='avatars/default.png')
+    steam_id = models.CharField(max_length=17, blank=True, null=True)
 
     def __str__(self):
         return f'Perfil de {self.user.username}'
