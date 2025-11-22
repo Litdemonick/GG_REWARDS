@@ -7,7 +7,7 @@ from .models import Profile
 from apps.games.models import Game
 from django.urls import reverse
 from urllib.parse import urlencode
-from apps.api_integrations.steam_service import validate_steam_openid, get_owned_games, get_game_achievements
+from apps.api_integrations.steam_service import validate_steam_openid, get_owned_games, get_game_achievements, get_steam_id
 
 def home(request):
     '''Página de inicio'''
@@ -188,3 +188,33 @@ def game_achievements(request, app_id):
         'app_id': app_id
     }
     return render(request, 'users/game_achievements.html', context)
+
+@login_required
+def unlink_steam(request):
+    """Desvincula la cuenta de Steam del usuario"""
+    if request.method == 'POST':
+        user_profile = Profile.objects.get(user=request.user)
+        user_profile.steam_id = None
+        user_profile.save()
+        messages.success(request, 'Cuenta de Steam desvinculada correctamente.')
+    
+    return redirect('users:profile')
+
+@login_required
+def link_steam(request):
+    """Vincula la cuenta de Steam manualmente usando ID o URL"""
+    if request.method == 'POST':
+        steam_input = request.POST.get('steam_input')
+        if steam_input:
+            steam_id = get_steam_id(steam_input)
+            if steam_id:
+                profile, created = Profile.objects.get_or_create(user=request.user)
+                profile.steam_id = steam_id
+                profile.save()
+                messages.success(request, '¡Cuenta de Steam vinculada exitosamente!')
+            else:
+                messages.error(request, 'No se pudo encontrar ese usuario de Steam. Verifica que el perfil sea público o el ID sea correcto.')
+        else:
+            messages.error(request, 'Por favor ingresa un ID o URL.')
+    
+    return redirect('users:profile')
