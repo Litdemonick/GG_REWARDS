@@ -1,6 +1,5 @@
 ﻿{% load static %}
 <!DOCTYPE html>
-<!-- Agregamos id y class para controlar el modo oscuro desde aquí -->
 <html lang="es">
 
 <head>
@@ -16,19 +15,14 @@
     </script>
     <title>{% block title %}GG Rewards - Level Up{% endblock %}</title>
 
-    <!-- Fuentes -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="{% static 'css/modal.css' %}">
 
-    <!-- Configuración Tailwind -->
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -122,12 +116,10 @@
 
 <body class="antialiased selection:bg-purple-500 selection:text-white">
 
-    <!-- NAVBAR -->
     <nav class="fixed top-0 w-full glass-nav transition-all duration-300 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-30 px-4 py-9">
 
-                <!-- LOGO COMPLETO -->
                 <div class="flex-shrink-0 flex flex-col items-center justify-center cursor-pointer hover:opacity-90 transition-opacity group py-1"
                     onclick="window.location.href='/'">
 
@@ -156,14 +148,14 @@
                     </span>
                 </div>
 
-                <!-- LINKS ESCRITORIO -->
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-center space-x-10">
                         <a href="/"
                             class="hover:text-purple-500 transition-colors px-3 py-2 rounded-md text-base font-medium">Inicio</a>
                         <a href="{% url 'games:list' %}"
                             class="hover:text-purple-500 transition-colors px-3 py-2 rounded-md text-base font-medium">Juegos</a>
-                        <a href="#"
+                        
+                        <a href="{% url 'users:rankings' %}"
                             class="hover:text-purple-500 transition-colors px-3 py-2 rounded-md text-base font-medium">Rankings</a>
 
                         {% if user.is_authenticated %}
@@ -188,8 +180,6 @@
         </div>
     </nav>
 
-    <!-- MODALS -->
-    <!-- Login Modal -->
     <div id="login-modal" class="modal-overlay">
         <div class="modal-container">
             <div class="neon-aura"></div>
@@ -201,7 +191,6 @@
                     <p class="text-gray-400 text-sm">Ingresa a tu cuartel general para continuar.</p>
                 </div>
                 <form method="POST" action="{% url 'users:login_modal' %}">
-                    {% csrf_token %}
                     {% csrf_token %}
                     <div class="mb-6">
                         <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Usuario o
@@ -253,7 +242,6 @@
         </div>
     </div>
 
-    <!-- Register Modal -->
     <div id="register-modal" class="modal-overlay">
         <div class="modal-container">
             <div class="neon-aura"
@@ -267,7 +255,6 @@
                     <p class="text-gray-400 text-sm">Crea tu cuenta y empieza a sumar trofeos.</p>
                 </div>
                 <form method="POST" action="{% url 'users:register_modal' %}">
-                    {% csrf_token %}
                     {% csrf_token %}
                     <div class="mb-5">
                         <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Nombre de
@@ -342,12 +329,10 @@
             </div>
         </div>
     </div>
-    <!-- MAIN -->
     <main class="min-h-screen pt-32">
         {% block content %}
         {% endblock %}
     </main>
-    <!-- FOOTER -->
     <footer
         class="border-t border-gray-200 dark:border-gray-800 bg-gray-100 dark:bg-gray-900 mt-20 py-10 transition-colors duration-300">
         <div class="max-w-7xl mx-auto px-4 text-center text-gray-600 dark:text-gray-400">
@@ -355,7 +340,6 @@
         </div>
     </footer>
 
-    <!-- SCRIPTS -->
     <script src="{% static 'js/modal.js' %}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {

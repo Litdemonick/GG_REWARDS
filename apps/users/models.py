@@ -9,6 +9,11 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to=user_directory_path, default='avatars/default.png')
     steam_id = models.CharField(max_length=17, blank=True, null=True)
+    xp = models.IntegerField(default=0)
+    trophies = models.IntegerField(default=0)
+    games_cache = models.JSONField(default=list, blank=True)
+    rank = models.CharField(max_length=50, default='NOVATO')
+    level = models.IntegerField(default=1)
 
     def __str__(self):
         return f'Perfil de {self.user.username}'

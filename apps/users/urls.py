@@ -15,5 +15,8 @@ urlpatterns = [
     path('steam/callback/', views.steam_callback, name='steam_callback'),
     path('steam/unlink/', views.unlink_steam, name='unlink_steam'),
     path('steam/link/', views.link_steam, name='link_steam'),
+    path('steam/sync/', views.sync_steam, name='sync_steam'),
+    path('rankings/', views.rankings_view, name='rankings'),
+    path('u/<str:username>/', views.public_profile_view, name='public_profile'), # Perfil público
     path('steam/game/<str:app_id>/achievements/', views.game_achievements, name='game_achievements'),
 ]
