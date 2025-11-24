@@ -1,0 +1,476 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Estilos del Modal de Edición */
+    .profile-modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        backdrop-filter: blur(5px);
+    }
+
+    .profile-modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .profile-modal-container {
+        transform: scale(0.95);
+        transition: transform 0.3s ease;
+    }
+
+    .profile-modal-overlay.active .profile-modal-container {
+        transform: scale(1);
+    }
+
+    /* Estilos del Loader (Cargando) */
+    .loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(17, 24, 39, 0.95);
+        /* Fondo más oscuro */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(8px);
+    }
+
+    .loader-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(139, 92, 246, 0.1);
+        border-radius: 50%;
+        border-top-color: #8b5cf6;
+        /* Morado */
+        border-right-color: #06b6d4;
+        /* Cyan */
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<div id="loading-overlay" class="loader-overlay">
+    <div class="spinner"></div>
+    <p class="text-white font-bold text-xl animate-pulse tracking-wider" id="loader-text">Cargando...</p>
+    <p class="text-gray-400 text-sm mt-2">Por favor espera, estamos procesando los datos.</p>
+</div>
+
+<div class="relative min-h-screen pt-32 pb-20 px-4 overflow-hidden">
+    <div
+        class="absolute top-20 left-10 w-72 h-72 bg-purple-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-pulse">
+    </div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-cyan-600/20 rounded-full mix-blend-screen filter blur-[100px]">
+    </div>
+
+    <div class='max-w-5xl mx-auto relative z-10'>
+
+        <div
+            class='bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl p-8 border border-gray-200 dark:border-gray-700 shadow-[0_0_40px_rgba(139,92,246,0.15)] relative overflow-hidden group'>
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500">
+            </div>
+
+            <div class='flex flex-col md:flex-row items-center gap-8'>
+                <div class="relative">
+                    <div
+                        class="absolute -inset-1.5 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full blur opacity-70 group-hover:opacity-100 transition-opacity duration-500 animate-pulse">
+                    </div>
+                    <div
+                        class='relative w-32 h-32 rounded-full border-4 border-white dark:border-gray-900 shadow-inner overflow-hidden'>
+                        {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" alt="Avatar de {{ user.username }}"
+                            class="w-full h-full object-cover">
+                        {% else %}
+                        <div
+                            class="w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                            {{ user.username|slice:':1'|upper }}
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div
+                        class="absolute bottom-0 right-0 bg-gray-900 border-2 border-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg transform translate-x-2">
+                        LVL <span class="counter-anim" data-target="{{ profile.level|default:1 }}">0</span>
+                    </div>
+                </div>
+
+                <div class="text-center md:text-left flex-1 w-full">
+                    <h2 class='text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-1'>
+                        {{ user.username }}
+                    </h2>
+                    <p
+                        class='text-gray-500 dark:text-gray-400 font-mono text-sm mb-4 flex items-center justify-center md:justify-start gap-2'>
+                        <i class="fa-solid fa-envelope"></i> {{ user.email }}
+                    </p>
+
+                    <div class="w-full max-w-md bg-gray-200 dark:bg-gray-700 h-4 rounded-full overflow-hidden mb-2 relative border border-gray-300 dark:border-gray-600">
+                        <div id="xp-bar-fill"
+                            class="bg-gradient-to-r from-purple-500 to-cyan-500 h-full rounded-full shadow-[0_0_10px_rgba(168,85,247,0.5)] transition-all duration-[2000ms] ease-out"
+                            style="width: 0%" 
+                            data-width="{{ xp_percentage|floatformat:0|default:0 }}%">
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between max-w-md text-xs font-semibold uppercase tracking-widest">
+                        <span class="text-purple-500">
+                            <span class="counter-anim" data-target="{{ xp_progress|default:0 }}">0</span> XP
+                        </span>
+                        <span class="text-gray-400"> / {{ xp_threshold|default:1000 }} XP</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
+                    <button id="open-edit-modal-btn"
+                        class="group/btn relative inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-purple-500 transition-all duration-200 bg-purple-100/50 dark:bg-purple-900/20 rounded-xl hover:bg-purple-500 hover:text-white border border-purple-200 dark:border-purple-900/50">
+                        <i class="fa-solid fa-pencil"></i> Editar Perfil
+                    </button>
+                    <a href="{% url 'users:logout' %}"
+                        class="group/btn relative inline-flex items-center justify-center gap-2 px-6 py-3 font-bold text-red-500 transition-all duration-200 bg-red-100/50 dark:bg-red-900/20 font-pj rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-600 hover:bg-red-500 hover:text-white border border-red-200 dark:border-red-900/50">
+                        <i class="fa-solid fa-power-off"></i> Cerrar Sesión
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+
+            <div class="lg:col-span-1 space-y-6">
+                <div
+                    class='bg-white/50 dark:bg-gray-900/50 backdrop-blur-md p-6 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-purple-500/50 transition-all'>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-simple text-cyan-500"></i> Estadísticas
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div
+                            class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center text-yellow-500">
+                                    <i class="fa-solid fa-trophy"></i>
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-300 font-medium">Trofeos</span>
+                            </div>
+                            <span class="text-2xl font-bold text-gray-900 dark:text-white counter-anim"
+                                data-target="{{ profile.trophies|default:0 }}">0</span>
+                        </div>
+
+                        <div
+                            class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-500">
+                                    <i class="fa-solid fa-star"></i>
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-300 font-medium">Rango</span>
+                            </div>
+
+                            <span class="text-sm font-bold uppercase tracking-wide">
+                                {% if profile.rank == 'NOVATO' %}
+                                <span class="text-gray-500 dark:text-gray-400">{{ profile.rank }}</span>
+                                {% elif profile.rank == 'APRENDIZ' %}
+                                <span class="text-cyan-500">{{ profile.rank }}</span>
+                                {% elif profile.rank == 'PROFESIONAL' %}
+                                <span class="text-blue-500">{{ profile.rank }}</span>
+                                {% elif profile.rank == 'VETERANO' %}
+                                <span class="text-purple-500">{{ profile.rank }}</span>
+                                {% elif profile.rank == 'MAESTRO' %}
+                                <span class="text-pink-500">{{ profile.rank }}</span>
+                                {% else %}
+                                <span class="text-yellow-500 animate-pulse">{{ profile.rank|default:"NOVATO" }}</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div
+                    class='bg-white/50 dark:bg-gray-900/50 backdrop-blur-md p-6 rounded-2xl border border-gray-200 dark:border-gray-700 h-full'>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-link text-pink-500"></i> Cuentas Vinculadas
+                    </h3>
+
+                    <div class='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                        <div
+                            class='relative p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-300 shadow-sm'>
+                            <div class="flex items-center justify-between h-full">
+                                <div class="flex items-center gap-3">
+                                    <i
+                                        class="fa-brands fa-steam text-3xl {% if profile.steam_id %}text-[#171a21] dark:text-[#66c0f4]{% else %}text-gray-400{% endif %}"></i>
+                                    <span class="font-bold text-gray-700 dark:text-gray-300">Steam</span>
+                                </div>
+
+                                {% if profile.steam_id %}
+                                <div class="flex items-center gap-3">
+                                    <span
+                                        class="px-2 py-1 text-xs font-bold bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded uppercase border border-green-200 dark:border-green-900 select-none">
+                                        Linked
+                                    </span>
+
+                                    <a href="{% url 'users:sync_steam' %}"
+                                        onclick="showLoader('Analizando biblioteca de Steam...')"
+                                        class="w-8 h-8 flex items-center justify-center rounded-full bg-cyan-100 text-cyan-600 hover:bg-cyan-500 hover:text-white transition-all transform hover:rotate-180 duration-700 shadow-sm"
+                                        title="Sincronizar Datos">
+                                        <i class="fa-solid fa-rotate"></i>
+                                    </a>
+
+                                    <form action="{% url 'users:unlink_steam' %}" method="POST"
+                                        class="flex items-center m-0 p-0"
+                                        onsubmit="showLoader('Desvinculando cuenta...'); return confirm('¿Estás seguro de desvincular tu cuenta? Se borrarán tus estadísticas.');">
+                                        {% csrf_token %}
+                                        <button type="submit"
+                                            class="w-8 h-8 flex items-center justify-center rounded-full bg-red-100 text-red-500 hover:bg-red-500 hover:text-white transition-colors shadow-sm"
+                                            title="Desvincular Steam">
+                                            <i class="fa-solid fa-trash-can text-sm"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                {% else %}
+                                <a href="{% url 'users:steam_login' %}"
+                                    class="px-3 py-1 text-xs font-bold bg-gray-100 dark:bg-gray-700 text-gray-500 rounded uppercase hover:bg-[#171a21] hover:text-white dark:hover:bg-[#66c0f4] dark:hover:text-black transition-colors cursor-pointer">
+                                    Vincular
+                                </a>
+                                {% endif %}
+                            </div>
+
+                            {% if not profile.steam_id %}
+                            <a href="{% url 'users:steam_login' %}" class="absolute inset-0 z-10"
+                                aria-label="Vincular Steam"></a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <p class="text-center text-xs text-gray-400 mt-6">Haz clic en el botón de sincronizar <i
+                            class="fa-solid fa-rotate text-cyan-500"></i> para actualizar tus logros.</p>
+                </div>
+            </div>
+        </div>
+
+        {% if steam_games %}
+        <div class="mt-12">
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-3">
+                <i class="fa-brands fa-steam text-[#171a21] dark:text-[#66c0f4]"></i>
+                Tus Juegos de Steam ({{ steam_games|length }})
+            </h3>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {% for game in steam_games %}
+                <a href="{% url 'users:game_achievements' game.appid %}?game_name={{ game.name|urlencode }}"
+                    onclick="showLoader('Cargando logros de {{ game.name }}...')"
+                    class="relative group rounded-xl overflow-hidden aspect-[3/4] cursor-pointer border border-gray-200 dark:border-gray-800 hover:border-purple-500 transition-all shadow-lg hover:shadow-purple-500/20">
+
+                    <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/{{ game.appid }}/library_600x900_2x.jpg"
+                        onerror="this.src='http://media.steampowered.com/steamcommunity/public/images/apps/{{ game.appid }}/{{ game.img_icon_url }}.jpg'"
+                        alt="{{ game.name }}"
+                        class="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500">
+
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90">
+                    </div>
+
+                    <div class="absolute bottom-0 left-0 p-4 w-full">
+                        <h4
+                            class="font-bold text-lg text-white group-hover:text-purple-400 transition-colors truncate mb-2">
+                            {{ game.name }}</h4>
+                        <div class="flex items-center justify-between text-xs text-gray-300">
+                            <span class="bg-gray-800/80 backdrop-blur-sm px-2 py-1 rounded border border-gray-700">
+                                <i class="fa-regular fa-clock mr-1 text-cyan-400"></i> {{ game.hours_played }} h
+                            </span>
+                            <span
+                                class="text-purple-400 font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+                                Ver Logros <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </span>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div
+            class="mt-12 w-full p-8 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30 text-center">
+            <div
+                class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+            </div>
+            <h4 class="text-xl font-bold text-gray-800 dark:text-white mb-2">No se encontraron juegos</h4>
+            <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-6">
+                No pudimos cargar tus juegos porque tu perfil de Steam no está vinculado o está en privado o no tienes
+                juegos con más de una hora de juego
+            </p>
+
+            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg max-w-lg mx-auto text-left">
+                <p class="font-bold text-blue-600 dark:text-blue-400 mb-2 text-sm">Cómo solucionarlo:</p>
+                <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                    <li>Vincula tu cuenta de GG_REWARDS con Steam.</li>
+                    <li>Ve a tu Perfil de Steam > Modificar Perfil.</li>
+                    <li>Entra en <strong>Configuración de privacidad</strong>.</li>
+                    <li>Pon <strong>"Detalles de los juegos"</strong> en <strong>Público</strong>.</li>
+                    <li>Recarga esta página.</li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<div id="edit-profile-modal" class="profile-modal-overlay">
+    <div class="profile-modal-container w-full max-w-2xl">
+        <div class="relative bg-gray-900/80 backdrop-blur-xl rounded-2xl shadow-2xl border border-gray-700 p-8 sm:p-10">
+            <button id="close-edit-modal-btn"
+                class="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors text-2xl"><i
+                    class="fa-solid fa-times"></i></button>
+
+            <div class="text-center mb-8">
+                <h2 class="text-3xl font-extrabold text-white mb-2">Editar Perfil</h2>
+                <p class="text-gray-400 text-sm">Actualiza tu información y avatar.</p>
+            </div>
+
+            <form method="POST" action="{% url 'users:update_profile' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="flex flex-col items-center mb-8">
+                    <label for="profile_picture" class="cursor-pointer">
+                        <img id="avatar-preview" src="{{ profile.avatar.url }}" alt="Vista previa del avatar"
+                            class="w-32 h-32 rounded-full object-cover border-4 border-purple-500 shadow-lg mb-4 hover:opacity-80 transition-opacity">
+                    </label>
+                    <input type="file" name="profile_picture" id="profile_picture" class="hidden" accept="image/*">
+                    <label for="profile_picture"
+                        class="text-sm font-semibold text-cyan-400 hover:text-cyan-300 cursor-pointer">
+                        <i class="fa-solid fa-camera mr-1"></i> Cambiar foto de perfil
+                    </label>
+                </div>
+
+                <div class="mb-5">
+                    <label for="username" class="block text-sm font-medium text-gray-300 mb-2">Nombre de Usuario</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-gamepad text-cyan-500"></i>
+                        </div>
+                        <input type="text" name="username" value="{{ user.username }}" required
+                            class="block w-full pl-10 pr-3 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all">
+                    </div>
+                </div>
+
+                <div class="mb-8">
+                    <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Correo Electrónico</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-envelope text-cyan-500"></i>
+                        </div>
+                        <input type="email" name="email" value="{{ user.email }}" required
+                            class="block w-full pl-10 pr-3 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all">
+                    </div>
+                </div>
+
+                <button type="submit"
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-700 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transform hover:scale-[1.02] transition-all shadow-[0_0_20px_rgba(8,145,178,0.4)]">
+                    GUARDAR CAMBIOS
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 1. Función para mostrar el loader con mensaje dinámico
+    function showLoader(message = 'Cargando...') {
+        const loader = document.getElementById('loading-overlay');
+        const text = document.getElementById('loader-text');
+        text.textContent = message;
+        loader.classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // --- Lógica del Modal (Tu código original) ---
+        const modal = document.getElementById('edit-profile-modal');
+        const openBtn = document.getElementById('open-edit-modal-btn');
+        const closeBtn = document.getElementById('close-edit-modal-btn');
+        const avatarInput = document.getElementById('profile_picture');
+        const avatarPreview = document.getElementById('avatar-preview');
+
+        if (openBtn) openBtn.addEventListener('click', () => modal.classList.add('active'));
+        const closeModal = () => modal.classList.remove('active');
+        if (closeBtn) closeBtn.addEventListener('click', closeModal);
+        if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
+
+        if (avatarInput) {
+            avatarInput.addEventListener('change', function (event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) { avatarPreview.src = e.target.result; }
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // --- 2. Lógica de Animaciones (NUEVO) ---
+
+        // A. Animar la barra de XP
+        const xpBar = document.getElementById('xp-bar-fill');
+        if (xpBar) {
+            // Un pequeño delay asegura que la transición CSS se vea
+            setTimeout(() => {
+                const targetWidth = xpBar.getAttribute('data-width') || '0%';
+                xpBar.style.width = targetWidth;
+            }, 300);
+        }
+
+        // B. Animar Contadores (Trofeos, XP, Nivel)
+        const counters = document.querySelectorAll('.counter-anim');
+        counters.forEach(counter => {
+            const target = +counter.getAttribute('data-target');
+            // Si el objetivo es 0, no animar
+            if (target === 0) return;
+
+            const duration = 2000; // Duración de la animación en ms
+            const increment = target / (duration / 16); // ~60 FPS
+
+            let current = 0;
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    counter.innerText = Math.ceil(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    counter.innerText = target;
+                }
+            };
+            updateCounter();
+        });
+    });
+</script>
+{% endblock content %}

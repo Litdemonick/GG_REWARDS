@@ -1,0 +1,296 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- SECCIÓN HERO -->
+<div class="relative overflow-hidden transition-colors duration-300">
+    <!-- Fondos de luz -->
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-purple-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-pulse"></div>
+    <div class="absolute top-20 right-20 w-[400px] h-[400px] bg-pink-600 rounded-full mix-blend-multiply filter blur-[128px] opacity-20"></div>
+
+    <!-- Ajuste por navbar -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-16 text-center relative z-10">
+        
+        <!-- Badge -->
+        <span class="inline-flex items-center gap-2 py-1 px-3 rounded-full bg-purple-100 dark:bg-purple-900/30 border border-purple-200 dark:border-purple-500/30 text-purple-600 dark:text-purple-300 text-sm font-semibold mb-6">
+            <i class="fa-solid fa-crown"></i> La plataforma definitiva para gamers
+        </span>
+
+        <!-- Título Hero -->
+        <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 text-gray-900 dark:text-white">
+            Domina tus juegos <br>
+            <span class="relative inline-block h-[1.2em] overflow-hidden align-bottom">
+                <span class="block animate-text-slide text-left leading-tight">
+                    <span class="block pb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Conquista.</span>
+                    <span class="block pb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Conecta.</span>
+                    <span class="block pb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Sube de nivel.</span>
+                    <span class="block pb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-600">Conquista.</span>
+                </span>
+            </span>
+        </h1>
+
+        <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600 dark:text-gray-400 mb-10">
+            Registra tus progresos, desbloquea logros exclusivos y compite contra otros jugadores en el ranking global.
+        </p>
+
+        <!-- Botones -->
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <a href="#" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg font-bold text-lg hover:scale-105 transition-transform shadow-[0_0_20px_rgba(168,85,247,0.4)]">
+                <i class="fa-solid fa-rocket"></i> Empezar Aventura
+            </a>
+            <a href="#" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg font-bold text-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                <i class="fa-solid fa-list"></i> Ver Catálogo
+            </a>
+        </div>
+
+        <!-- MONITOR -->
+        <div class="mt-16 relative animate-float px-4">
+            <div class="mx-auto max-w-5xl relative perspective-1000">
+                <div class="relative bg-gray-800 dark:bg-gray-900 rounded-[2rem] p-3 md:p-4 shadow-xl border-4 border-gray-700 dark:border-gray-950 ring-1 ring-white/10 z-20">
+
+                    <!-- Cámara -->
+                    <div class="absolute top-0 left-1/2 -translate-x-1/2 h-4 w-24 bg-gray-800 dark:bg-gray-900 rounded-b-lg flex items-center justify-center border border-gray-700 dark:border-gray-800 border-t-0">
+                        <div class="w-1.5 h-1.5 rounded-full bg-black border border-gray-600"></div>
+                        <div class="w-1 h-1 rounded-full bg-green-500 ml-2 animate-pulse"></div>
+                    </div>
+
+                    <!-- Pantalla -->
+                    <div class="rounded-xl overflow-hidden bg-black relative shadow-inner">
+                        <div class="bg-gray-900/40 dark:bg-gray-900/60 backdrop-blur-xl">
+
+                            <div class="h-12 bg-white/10 dark:bg-black/20 border-b border-gray-200/10 backdrop-blur-md flex items-center px-4 justify-between">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                                    <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                                </div>
+                                <div class="w-12"></div>
+                            </div>
+
+                            <div class="relative aspect-video">
+                                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=1350&q=80"
+                                     class="absolute inset-0 w-full h-full object-cover opacity-90 hover:scale-105 transition-transform duration-[2s]">
+
+                                <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
+                                    <h3 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-white via-purple-400 to-purple-700 animate-rainbow text-center">
+                                        Compite, consigue trofeos<br>y canjea premios
+                                    </h3>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="relative mx-auto w-32 h-12 bg-gradient-to-b from-gray-700 to-gray-800"></div>
+                <div class="relative mx-auto w-64 h-4 bg-gray-700 rounded-t-sm rounded-b-xl"></div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- SECCIÓN CARACTERÍSTICAS -->
+<div class="py-20 bg-gray-50 dark:bg-gray-900/50">
+    <div class="max-w-7xl mx-auto px-4">
+        
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white">Todo lo que necesitas</h2>
+            <p class="text-gray-600 dark:text-gray-400">Potencia tu experiencia gaming.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+            <!-- Logros -->
+            <div class="group p-8 rounded-2xl bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:border-purple-500 hover:-translate-y-2 transition-all">
+                <div class="w-14 h-14 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-bullseye text-3xl text-purple-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Tracking de Logros</h3>
+                <p class="text-gray-600 dark:text-gray-400">Organiza tus logros y sincronízalos fácilmente.</p>
+            </div>
+
+            <!-- Rankings -->
+            <div class="group p-8 rounded-2xl bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:border-pink-500 hover:-translate-y-2 transition-all">
+                <div class="w-14 h-14 bg-pink-100 dark:bg-pink-900/30 rounded-lg flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-trophy text-3xl text-pink-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Rankings Globales</h3>
+                <p class="text-gray-600 dark:text-gray-400">Compite y sube en la clasificación.</p>
+            </div>
+
+            <!-- Biblioteca -->
+            <div class="group p-8 rounded-2xl bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 hover:border-cyan-500 hover:-translate-y-2 transition-all">
+                <div class="w-14 h-14 bg-cyan-100 dark:bg-cyan-900/30 rounded-lg flex items-center justify-center mb-6">
+                    <i class="fa-solid fa-gamepad text-3xl text-cyan-600"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Biblioteca Gamer</h3>
+                <p class="text-gray-600 dark:text-gray-400">Gestiona tus juegos en un solo lugar.</p>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- SECCIÓN TENDENCIAS -->
+<div class="py-20">
+    <div class="max-w-7xl mx-auto px-4">
+
+        <div class="flex justify-between items-end mb-10">
+            <h2 class="text-3xl font-bold flex items-center gap-2 text-gray-900 dark:text-white">
+                Juegos Tendencia <i class="fa-solid fa-fire text-orange-500 animate-pulse"></i>
+            </h2>
+            <a href="#" class="text-purple-600 hover:text-purple-500 font-semibold flex items-center gap-1">
+                Ver todos <i class="fa-solid fa-arrow-right text-sm"></i>
+            </a>
+        </div>
+
+        <!-- Carousel -->
+        <div class="relative group/carousel">
+
+            <button id="scrollLeft"
+                class="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-all">
+                <i class="fa-solid fa-chevron-left text-xl"></i>
+            </button>
+
+            <div id="gamesCarousel" class="flex gap-6 overflow-x-auto scroll-smooth pb-8 px-4 scrollbar-hide snap-x snap-mandatory">
+                {% for game in games %}
+                <div class="min-w-[280px] md:min-w-[320px] snap-center relative group rounded-xl overflow-hidden aspect-[3/4] border border-gray-200 dark:border-gray-800 hover:border-purple-500 transition-all">
+                    <img src="{{ game.image_url }}" class="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-4 w-full">
+                        <h4 class="font-bold text-lg text-white truncate group-hover:text-purple-400">{{ game.title }}</h4>
+                        <div class="flex items-center justify-between text-xs text-gray-300 mt-1">
+                            <span class="bg-gray-700 px-2 py-0.5 rounded">{{ game.genre }}</span>
+                            <span>⭐ {{ game.rating }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <button id="scrollRight"
+                class="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white/10 hover:bg-white/20 text-white p-3 rounded-full opacity-0 group-hover/carousel:opacity-100 transition-all">
+                <i class="fa-solid fa-chevron-right text-xl"></i>
+            </button>
+
+        </div>
+
+        <script>
+            const gamesCarousel = document.getElementById('gamesCarousel');
+            document.getElementById('scrollLeft').onclick = () => gamesCarousel.scrollBy({ left: -350, behavior: 'smooth' });
+            document.getElementById('scrollRight').onclick = () => gamesCarousel.scrollBy({ left: 350, behavior: 'smooth' });
+        </script>
+
+    </div>
+</div>
+
+<!-- 🔥 HALL OF FAME SOLO TOP 3 -->
+<div class="relative min-h-screen pt-32 pb-20 px-4 overflow-hidden">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-purple-600/20 rounded-full mix-blend-screen filter blur-[100px]"></div>
+
+    <div class="max-w-5xl mx-auto relative z-10">
+
+        <div class="text-center mb-16">
+            <h1 class="text-4xl md:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500">
+                Clasificación Global
+            </h1>
+            <p class="text-gray-400">Los mejores jugadores de la plataforma</p>
+        </div>
+
+        {% if top_players|length >= 3 %}
+
+        <div class="flex flex-col md:flex-row items-end justify-center gap-4 mb-16">
+
+            <!-- Segundo lugar -->
+            <div class="order-2 md:order-1 w-full md:w-1/3 relative group cursor-pointer"
+                 data-url="{% url 'users:public_profile' top_players.1.user.username %}">
+                 
+                <div class="bg-gray-800/80 backdrop-blur-md border border-gray-600 rounded-2xl p-6 text-center hover:-translate-y-2 transition">
+                    <div class="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center font-bold text-gray-800 border border-white shadow">
+                        2
+                    </div>
+
+                    <img src="{{ top_players.1.avatar.url }}" class="w-16 h-16 rounded-full mx-auto border-2 border-gray-300 mb-3">
+
+                    <h3 class="font-bold text-white truncate">{{ top_players.1.user.username }}</h3>
+                    <p class="text-purple-400 font-mono text-sm">{{ top_players.1.xp }} XP</p>
+
+                    <span class="px-2 py-0.5 bg-gray-600/30 text-gray-300 text-[10px] rounded-full font-bold uppercase">{{ top_players.1.rank }}</span>
+                </div>
+            </div>
+
+            <!-- Primer lugar -->
+            <div class="order-1 md:order-2 w-full md:w-1/3 relative group cursor-pointer"
+                 data-url="{% url 'users:public_profile' top_players.0.user.username %}">
+                 
+                <div class="absolute -top-16 left-0 w-full flex justify-center animate-bounce">
+                    <i class="fa-solid fa-crown text-5xl text-yellow-400 drop-shadow-xl"></i>
+                </div>
+
+                <div class="bg-gradient-to-b from-yellow-900/40 to-gray-900 border border-yellow-500/50 rounded-2xl p-8 text-center hover:-translate-y-3 shadow-xl">
+                    <div class="absolute -top-6 left-1/2 -translate-x-1/2 w-12 h-12 bg-yellow-400 rounded-full flex items-center justify-center font-bold text-yellow-900 border-4 border-gray-900 text-xl">1</div>
+
+                    <img src="{{ top_players.0.avatar.url }}" class="w-24 h-24 rounded-full mx-auto border-4 border-yellow-400 shadow mb-4">
+
+                    <h3 class="text-2xl font-black text-white truncate">{{ top_players.0.user.username }}</h3>
+                    <p class="text-yellow-400 font-mono font-bold text-lg">{{ top_players.0.xp }} XP</p>
+
+                    <span class="px-3 py-1 bg-yellow-500/20 text-yellow-300 text-xs rounded-full font-bold uppercase">{{ top_players.0.rank }}</span>
+                </div>
+            </div>
+
+            <!-- Tercer lugar -->
+            <div class="order-3 md:order-3 w-full md:w-1/3 relative group cursor-pointer"
+                 data-url="{% url 'users:public_profile' top_players.2.user.username %}">
+                 
+                <div class="bg-gray-800/80 backdrop-blur-md border border-orange-700/50 rounded-2xl p-6 text-center hover:-translate-y-2 transition">
+                    <div class="absolute -top-5 left-1/2 -translate-x-1/2 w-10 h-10 bg-orange-400 rounded-full flex items-center justify-center font-bold text-orange-900 border border-white shadow">
+                        3
+                    </div>
+
+                    <img src="{{ top_players.2.avatar.url }}" class="w-16 h-16 rounded-full mx-auto border-2 border-orange-400 mb-3">
+
+                    <h3 class="font-bold text-white truncate">{{ top_players.2.user.username }}</h3>
+                    <p class="text-purple-400 font-mono text-sm">{{ top_players.2.xp }} XP</p>
+
+                    <span class="px-2 py-0.5 bg-orange-600/20 text-orange-300 text-[10px] rounded-full font-bold uppercase">{{ top_players.2.rank }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        {% endif %}
+    </div>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay" class="fixed inset-0 bg-gray-900/90 backdrop-blur-md z-[100] hidden flex flex-col items-center justify-center opacity-0 transition">
+    <div class="relative">
+        <div class="w-20 h-20 border-4 border-purple-500/30 border-t-purple-500 rounded-full animate-spin"></div>
+        <div class="absolute inset-0 flex items-center justify-center">
+            <i class="fa-brands fa-steam text-2xl text-purple-400 animate-pulse"></i>
+        </div>
+    </div>
+
+    <h3 class="text-2xl font-bold text-white mt-6 animate-pulse">Analizando Jugador...</h3>
+    <p class="text-gray-400 text-sm">Sincronizando logros y estadísticas con Steam</p>
+</div>
+
+<script>
+function showLoading(url) {
+    if (!url) return;
+    const overlay = document.getElementById('loading-overlay');
+    overlay.classList.remove('hidden');
+    setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+    setTimeout(() => window.location.href = url, 100);
+}
+window.addEventListener('pageshow', () => {
+    const overlay = document.getElementById('loading-overlay');
+    overlay.classList.add('opacity-0', 'hidden');
+});
+</script>
+
+{% endblock %}
