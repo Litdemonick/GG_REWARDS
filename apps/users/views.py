@@ -98,7 +98,8 @@ def login_view(request):
             
             return redirect(request.META.get('HTTP_REFERER', 'users:home'))
     
-    return render(request, 'users/login.html')
+    # Redirigir al home con el parámetro login=true para abrir el modal
+    return redirect('/?login=true')
 
 @login_required
 def logout_view(request):

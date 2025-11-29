@@ -109,6 +109,7 @@
         .text-gradient {
             background: linear-gradient(to right, #8b5cf6, #ec4899);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
         }
     </style>
@@ -154,7 +155,7 @@
                             class="hover:text-purple-500 transition-colors px-3 py-2 rounded-md text-base font-medium">Inicio</a>
                         <a href="{% url 'games:list' %}"
                             class="hover:text-purple-500 transition-colors px-3 py-2 rounded-md text-base font-medium">Juegos</a>
-                        
+
                         <a href="{% url 'users:rankings' %}"
                             class="hover:text-purple-500 transition-colors px-3 py-2 rounded-md text-base font-medium">Rankings</a>
 
@@ -345,6 +346,19 @@
         document.addEventListener('DOMContentLoaded', function () {
             // Muestra el body una vez que el DOM está listo para evitar el parpadeo
             document.body.style.display = 'block';
+
+            // Check for login query param
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('login') === 'true') {
+                const loginModal = document.getElementById('login-modal');
+                if (loginModal) {
+                    loginModal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+
+                    // Clean URL
+                    window.history.replaceState({}, document.title, "/");
+                }
+            }
         });
     </script>
     <script>
