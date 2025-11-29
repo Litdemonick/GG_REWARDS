@@ -4,13 +4,33 @@ from apps.users.models import Profile
 from django.db.models import Count
 
 def game_list(request):
-    # 1. Filtrado Básico
-    genre_filter = request.GET.get('genre')
+    # 1. Filtrado Básico, Búsqueda y Ordenamiento
+    genre_filters = request.GET.getlist('genre') # Obtener lista de géneros
+    search_query = request.GET.get('search')
+    sort_by = request.GET.get('sort')
+    only_discounts = request.GET.get('discount')
     
-    if genre_filter:
-        games = Game.objects.filter(genre__iexact=genre_filter)
-    else:
-        games = Game.objects.all()
+    games = Game.objects.all()
+
+    if search_query:
+        games = games.filter(title__icontains=search_query)
+    
+    if genre_filters:
+        # Usar Q objects para buscar si el género del juego CONTIENE alguno de los seleccionados
+        # Esto permite que "RPG de Acción" aparezca si seleccionas "RPG" o "Acción"
+        from django.db.models import Q
+        query = Q()
+        for genre in genre_filters:
+            query |= Q(genre__icontains=genre)
+        games = games.filter(query)
+
+    if only_discounts == 'true':
+        games = games.filter(discount__gt=0)
+
+    if sort_by == 'price_asc':
+        games = games.order_by('price')
+    elif sort_by == 'price_desc':
+        games = games.order_by('-price')
 
     # 2. Sistema de Recomendaciones
     recommended_games = []
@@ -51,6 +71,9 @@ def game_list(request):
     context = {
         'games': games,
         'recommended_games': recommended_games,
-        'active_filter': genre_filter
+        'active_filters': genre_filters,
+        'search_query': search_query,
+        'sort_by': sort_by,
+        'only_discounts': only_discounts
     }
     return render(request, 'games/games.html', context)
