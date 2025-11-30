@@ -12,8 +12,22 @@ class Profile(models.Model):
     xp = models.IntegerField(default=0)
     trophies = models.IntegerField(default=0)
     games_cache = models.JSONField(default=list, blank=True)
-    rank = models.CharField(max_length=50, default='NOVATO')
+    rank = models.CharField(max_length=50, default='Novato')
     level = models.IntegerField(default=1)
+
+    def calculate_rank(self):
+        """Devuelve el nombre del rango basado en el nivel del usuario"""
+        if self.level < 5: return "Novato"
+        if self.level < 10: return "Aprendiz"
+        if self.level < 20: return "Profesional"
+        if self.level < 50: return "Veterano"
+        if self.level < 100: return "Maestro"
+        return "Leyenda"
+
+    def save(self, *args, **kwargs):
+        # Recalcular rango antes de guardar
+        self.rank = self.calculate_rank()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'Perfil de {self.user.username}'

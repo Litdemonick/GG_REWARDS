@@ -1,7 +1,8 @@
 ﻿from django.urls import path
+from . import views
 
 app_name = 'trophies'
 
 urlpatterns = [
-    # Aquí irán las rutas de trofeos
+    path('games/', views.game_catalog, name='game_catalog'),
 ]

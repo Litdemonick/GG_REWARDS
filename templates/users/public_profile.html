@@ -2,66 +2,203 @@
 {% load static %}
 
 {% block content %}
+<style>
+    /* Estilos del Loader (Cargando) */
+    .loader-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(17, 24, 39, 0.95);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(8px);
+    }
+
+    .loader-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .spinner {
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(139, 92, 246, 0.1);
+        border-radius: 50%;
+        border-top-color: #8b5cf6;
+        border-right-color: #06b6d4;
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 0 20px rgba(139, 92, 246, 0.3);
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+</style>
+
+<div id="loading-overlay" class="loader-overlay">
+    <div class="spinner"></div>
+    <p class="text-white font-bold text-xl animate-pulse tracking-wider" id="loader-text">Cargando...</p>
+</div>
+
 <div class="relative min-h-screen pt-32 pb-20 px-4 overflow-hidden">
-    <div class="absolute top-20 left-10 w-72 h-72 bg-purple-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-pulse"></div>
-    <div class="absolute bottom-20 right-10 w-96 h-96 bg-cyan-600/20 rounded-full mix-blend-screen filter blur-[100px]"></div>
+    <div
+        class="absolute top-20 left-10 w-72 h-72 bg-purple-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-pulse">
+    </div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-cyan-600/20 rounded-full mix-blend-screen filter blur-[100px]">
+    </div>
 
-    <div class='max-w-7xl mx-auto relative z-10'>
+    <div class='max-w-5xl mx-auto relative z-10'>
 
-        <div class='relative group bg-gray-900/60 backdrop-blur-2xl rounded-3xl border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden mb-16'>
-            
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500"></div>
-            
-            <div class='flex flex-col md:flex-row items-center p-8 md:p-10 gap-8 relative z-10'>
-                <div class="relative flex-shrink-0">
-                    <div class='relative w-32 h-32 md:w-40 md:h-40 rounded-full p-1 bg-gradient-to-br from-gray-700 via-gray-500 to-gray-800 shadow-2xl'>
-                        <div class="w-full h-full rounded-full overflow-hidden border-4 border-gray-900 bg-gray-800">
-                            {% if profile.avatar %}
-                            <img src="{{ profile.avatar.url }}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700">
-                            {% else %}
-                            <div class="w-full h-full flex items-center justify-center text-5xl font-black text-gray-700 select-none">
-                                {{ view_user.username|slice:':1'|upper }}
-                            </div>
-                            {% endif %}
+        <div
+            class='bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl rounded-2xl p-8 border border-gray-200 dark:border-gray-700 shadow-[0_0_40px_rgba(139,92,246,0.15)] relative overflow-hidden group'>
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-500">
+            </div>
+
+            <div class='flex flex-col md:flex-row items-center gap-8'>
+                <div class="relative">
+                    <div
+                        class="absolute -inset-1.5 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full blur opacity-70 group-hover:opacity-100 transition-opacity duration-500 animate-pulse">
+                    </div>
+                    <div
+                        class='relative w-32 h-32 rounded-full border-4 border-white dark:border-gray-900 shadow-inner overflow-hidden'>
+                        {% if profile.avatar %}
+                        <img src="{{ profile.avatar.url }}" alt="Avatar de {{ view_user.username }}"
+                            class="w-full h-full object-cover">
+                        {% else %}
+                        <div
+                            class="w-full h-full bg-gray-100 dark:bg-gray-800 flex items-center justify-center text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                            {{ view_user.username|slice:':1'|upper }}
                         </div>
-                        <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-gray-900 border border-purple-500/50 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1 whitespace-nowrap z-20">
-                            <span class="text-purple-400 uppercase tracking-wider">Lvl</span>
-                            <span class="text-base">{{ profile.level }}</span>
-                        </div>
+                        {% endif %}
+                    </div>
+                    <div
+                        class="absolute bottom-0 right-0 bg-gray-900 border-2 border-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg transform translate-x-2">
+                        LVL <span class="counter-anim" data-target="{{ profile.level|default:1 }}">0</span>
                     </div>
                 </div>
 
                 <div class="text-center md:text-left flex-1 w-full">
-                    <h2 class='text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 mb-2 drop-shadow-sm'>
+                    <h2 class='text-4xl font-extrabold text-gray-900 dark:text-white tracking-tight mb-1'>
                         {{ view_user.username }}
                     </h2>
-                    
-                    <div class="mb-4">
-                        <span class="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300">
-                            {{ profile.rank }}
-                        </span>
-                    </div>
-                    
-                    <div class="w-full max-w-lg bg-gray-800/50 h-3 rounded-full overflow-hidden mb-1 relative border border-white/5 shadow-inner mx-auto md:mx-0">
-                        <div id="public-xp-bar" 
-                             class="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 transition-all duration-[1500ms] ease-out w-0 relative" 
-                             data-width="{{ xp_percentage }}%">
+                    <p
+                        class='text-gray-500 dark:text-gray-400 font-mono text-sm mb-4 flex items-center justify-center md:justify-start gap-2'>
+                        <i class="fa-solid fa-envelope"></i> {{ view_user.email }}
+                    </p>
+
+                    <div
+                        class="w-full max-w-md bg-gray-200 dark:bg-gray-700 h-4 rounded-full overflow-hidden mb-2 relative border border-gray-300 dark:border-gray-600">
+                        <div id="xp-bar-fill"
+                            class="bg-gradient-to-r from-purple-500 to-cyan-500 h-full rounded-full shadow-[0_0_10px_rgba(168,85,247,0.5)] transition-all duration-[2000ms] ease-out"
+                            style="width: 0%" data-width="{{ xp_percentage|floatformat:0|default:0 }}%">
                         </div>
-                    </div>
-                    
-                    <div class="flex justify-between max-w-lg text-[10px] font-mono font-bold text-gray-500 mx-auto md:mx-0 px-1 uppercase tracking-wider">
-                        <span class="text-cyan-400">{{ xp_progress }} XP</span>
-                        <span>{{ xp_threshold }} XP NEXT</span>
                     </div>
 
-                    <div class="flex justify-center md:justify-start gap-8 mt-6">
-                        <div class="text-center md:text-left">
-                            <div class="text-2xl font-black text-white leading-none">{{ profile.trophies }}</div>
-                            <div class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Trofeos</div>
+                    <div class="flex justify-between max-w-md text-xs font-semibold uppercase tracking-widest">
+                        <span class="text-purple-500">
+                            <span class="counter-anim" data-target="{{ xp_progress|default:0 }}">0</span> XP
+                        </span>
+                        <span class="text-gray-400"> / {{ xp_threshold|default:1000 }} XP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+
+            <div class="lg:col-span-1 space-y-6">
+                <div
+                    class='bg-white/50 dark:bg-gray-900/50 backdrop-blur-md p-6 rounded-2xl border border-gray-200 dark:border-gray-700 hover:border-purple-500/50 transition-all'>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-simple text-cyan-500"></i> Estadísticas
+                    </h3>
+
+                    <div class="space-y-4">
+                        <div
+                            class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center text-yellow-500">
+                                    <i class="fa-solid fa-trophy"></i>
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-300 font-medium">Trofeos</span>
+                            </div>
+                            <span class="text-2xl font-bold text-gray-900 dark:text-white counter-anim"
+                                data-target="{{ profile.trophies|default:0 }}">0</span>
                         </div>
-                        <div class="text-center md:text-left">
-                            <div class="text-2xl font-black text-white leading-none">{{ steam_games|length }}</div>
-                            <div class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Juegos</div>
+
+                        <div
+                            class="flex items-center justify-between p-3 bg-white dark:bg-gray-800 rounded-lg border border-gray-100 dark:border-gray-700">
+                            <div class="flex items-center gap-3">
+                                <div
+                                    class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-500">
+                                    <i class="fa-solid fa-star"></i>
+                                </div>
+                                <span class="text-gray-600 dark:text-gray-300 font-medium">Rango</span>
+                            </div>
+
+                            <span class="text-sm font-bold uppercase tracking-wide">
+                                {% if profile.rank == 'NOVATO' %}
+                                <span class="text-gray-500 dark:text-gray-400">{{ profile.rank }}</span>
+                                {% elif profile.rank == 'APRENDIZ' %}
+                                <span class="text-cyan-500">{{ profile.rank }}</span>
+                                {% elif profile.rank == 'PROFESIONAL' %}
+                                <span class="text-blue-500">{{ profile.rank }}</span>
+                                {% elif profile.rank == 'VETERANO' %}
+                                <span class="text-purple-500">{{ profile.rank }}</span>
+                                {% elif profile.rank == 'MAESTRO' %}
+                                <span class="text-pink-500">{{ profile.rank }}</span>
+                                {% else %}
+                                <span class="text-yellow-500 animate-pulse">{{ profile.rank|default:"NOVATO" }}</span>
+                                {% endif %}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2">
+                <div
+                    class='bg-white/50 dark:bg-gray-900/50 backdrop-blur-md p-6 rounded-2xl border border-gray-200 dark:border-gray-700 h-full'>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-link text-pink-500"></i> Cuentas Vinculadas
+                    </h3>
+
+                    <div class='grid grid-cols-1 sm:grid-cols-2 gap-4'>
+                        <div
+                            class='relative p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 transition-all duration-300 shadow-sm'>
+                            <div class="flex items-center justify-between h-full">
+                                <div class="flex items-center gap-3">
+                                    <i
+                                        class="fa-brands fa-steam text-3xl {% if profile.steam_id %}text-[#171a21] dark:text-[#66c0f4]{% else %}text-gray-400{% endif %}"></i>
+                                    <span class="font-bold text-gray-700 dark:text-gray-300">Steam</span>
+                                </div>
+
+                                {% if profile.steam_id %}
+                                <div class="flex items-center gap-3">
+                                    <span
+                                        class="px-2 py-1 text-xs font-bold bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 rounded uppercase border border-green-200 dark:border-green-900 select-none">
+                                        Linked
+                                    </span>
+                                </div>
+                                {% else %}
+                                <span
+                                    class="px-3 py-1 text-xs font-bold bg-gray-100 dark:bg-gray-700 text-gray-500 rounded uppercase">
+                                    No vinculado
+                                </span>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -69,136 +206,84 @@
         </div>
 
         {% if steam_games %}
-        <div class="flex items-center gap-4 mb-8">
-            <h3 class="text-2xl font-bold text-white flex items-center gap-3">
-                <i class="fa-brands fa-steam text-[#66c0f4]"></i> Colección
-            </h3>
-            <div class="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent"></div>
-        </div>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {% for game in steam_games %}
-            <div class="group relative h-[450px] bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 shadow-lg hover:shadow-purple-500/20 hover:border-purple-500/40 transition-all duration-500 hover:-translate-y-2">
-                
-                <div class="absolute inset-0 z-0">
-                    <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/{{ game.appid }}/library_600x900_2x.jpg"
-                         onerror="this.src='http://media.steampowered.com/steamcommunity/public/images/apps/{{ game.appid }}/{{ game.img_icon_url }}.jpg'"
-                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
-                         alt="{{ game.name }}">
-                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent opacity-95 group-hover:opacity-90 transition-opacity"></div>
+        <div class="mt-12">
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-3">
+                <i class="fa-brands fa-steam text-[#171a21] dark:text-[#66c0f4]"></i>
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90">
                 </div>
 
-                <div class="absolute top-3 right-3 z-20 bg-black/60 backdrop-blur-md border border-white/10 px-2 py-1 rounded-lg">
-                    <div class="text-xs font-mono text-cyan-300 font-bold flex items-center gap-1">
-                        <i class="fa-regular fa-clock"></i> {{ game.hours_played }}h
+                <div class="absolute bottom-0 left-0 p-4 w-full">
+                    <h4
+                        class="font-bold text-lg text-white group-hover:text-purple-400 transition-colors truncate mb-2">
+                        {{ game.name }}</h4>
+                    <div class="flex items-center justify-between text-xs text-gray-300">
+                        <span class="bg-gray-800/80 backdrop-blur-sm px-2 py-1 rounded border border-gray-700">
+                            <i class="fa-regular fa-clock mr-1 text-cyan-400"></i> {{ game.hours_played }} h
+                        </span>
+                        <span
+                            class="text-purple-400 font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+                            Ver en Steam <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        </span>
                     </div>
                 </div>
-
-                <div class="absolute bottom-0 left-0 w-full p-5 z-20 flex flex-col justify-end h-full">
-                    
-                    <h4 class="text-xl font-bold text-white leading-tight mb-4 group-hover:text-purple-400 transition-colors line-clamp-2 drop-shadow-md">
-                        {{ game.name }}
-                    </h4>
-
-                    <div class="bg-gray-800/50 p-3 rounded-xl border border-white/5 backdrop-blur-sm group-hover:bg-gray-800/70 transition-colors">
-                        <div class="flex justify-between items-end mb-2">
-                            <span class="text-gray-400 font-bold text-xs flex items-center gap-1">
-                                <i class="fa-solid fa-trophy text-yellow-500"></i> Progreso
-                            </span>
-                            <span class="text-sm font-black text-white">
-                                {{ game.achievements_unlocked }} 
-                                <span class="text-gray-500">/</span>
-                                {% if game.achievements_total and game.achievements_total > 0 %}
-                                    {{ game.achievements_total }}
-                                {% else %}
-                                    <span class="text-gray-500 text-xs">--</span>
-                                {% endif %}
-                            </span>
-                        </div>
-
-                        <div class="w-full h-2 bg-gray-700/50 rounded-full overflow-hidden shadow-inner">
-                            {% if game.achievements_total and game.achievements_total > 0 %}
-                            <div class="h-full bg-gradient-to-r from-purple-600 via-pink-500 to-cyan-500 game-progress-bar transition-all duration-1000 ease-out w-0 relative"
-                                 data-width="{% widthratio game.achievements_unlocked game.achievements_total 100 %}%">
-                                 <div class="absolute top-0 left-0 w-full h-full bg-white/20 animate-pulse"></div>
-                            </div>
-                            {% else %}
-                            <div class="h-full bg-gray-700 w-0"></div>
-                            {% endif %}
-                        </div>
-
-                        <div class="text-right mt-1">
-                             {% if game.achievements_total and game.achievements_total > 0 %}
-                            <span class="text-[10px] font-bold text-cyan-400 percentage-text">
-                                {% widthratio game.achievements_unlocked game.achievements_total 100 %}% Completado
-                            </span>
-                            {% else %}
-                            <span class="text-[10px] font-bold text-gray-600">N/A</span>
-                            {% endif %}
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-            {% endfor %}
+                </a>
+                {% endfor %}
         </div>
-
-        {% else %}
-        <div class="flex flex-col items-center justify-center py-24 text-center border-2 border-dashed border-gray-800 rounded-3xl bg-gray-900/30">
-            <i class="fa-solid fa-gamepad text-6xl text-gray-700 mb-4"></i>
-            <h3 class="text-xl font-bold text-gray-400">Sin juegos visibles</h3>
-            <p class="text-gray-600 mt-2">No se encontraron datos de Steam.</p>
-        </div>
-        {% endif %}
-
-        {% if is_own_profile %}
-        <div class="fixed bottom-8 right-8 z-50">
-            <a href="{% url 'users:profile' %}" 
-               class="group flex items-center justify-center w-14 h-14 bg-blue-600 hover:bg-blue-500 rounded-full shadow-lg hover:shadow-blue-500/50 transition-all hover:scale-110">
-                <i class="fa-solid fa-pencil text-white"></i>
-            </a>
-        </div>
-        {% endif %}
-
     </div>
+    {% else %}
+    <div
+        class="mt-12 w-full p-8 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30 text-center">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 dark:bg-gray-700 mb-4">
+            <i class="fa-solid fa-ghost text-3xl text-gray-400"></i>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Sin juegos visibles</h3>
+        <p class="text-gray-500 dark:text-gray-400">No se encontraron datos de Steam.</p>
+    </div>
+    {% endif %}
+
+    {% if is_own_profile %}
+    <div class="fixed bottom-8 right-8 z-50">
+        <a href="{% url 'users:profile' %}"
+            class="group flex items-center justify-center w-14 h-14 bg-blue-600 hover:bg-blue-500 rounded-full shadow-lg hover:shadow-blue-500/50 transition-all hover:scale-110">
+            <i class="fa-solid fa-pencil text-white"></i>
+        </a>
+    </div>
+    {% endif %}
+
+</div>
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        // Barra XP Principal
-        const xpBar = document.getElementById('public-xp-bar');
+    document.addEventListener('DOMContentLoaded', function () {
+        // A. Animar la barra de XP
+        const xpBar = document.getElementById('xp-bar-fill');
         if (xpBar) {
-            setTimeout(() => { xpBar.style.width = xpBar.getAttribute('data-width'); }, 100);
+            setTimeout(() => {
+                const targetWidth = xpBar.getAttribute('data-width') || '0%';
+                xpBar.style.width = targetWidth;
+            }, 300);
         }
 
-        // Barras de Juegos (Animación automática)
-        const gameBars = document.querySelectorAll('.game-progress-bar');
-        gameBars.forEach(bar => {
-            const width = bar.getAttribute('data-width');
-            // Un pequeño delay aleatorio para que se vea más fluido
-            const delay = Math.floor(Math.random() * 300) + 100;
-            
-            setTimeout(() => { 
-                bar.style.width = width;
-                
-                // Si está al 100%, cambiar barra a verde Y texto a verde
-                if(width === '100%') {
-                    // Cambiar Barra
-                    bar.classList.remove('from-purple-600', 'via-pink-500', 'to-cyan-500');
-                    bar.classList.add('bg-green-500', 'shadow-[0_0_10px_rgba(34,197,94,0.5)]');
-                    
-                    // Buscar el texto de porcentaje asociado y cambiarlo a verde
-                    const parentCard = bar.closest('.group'); 
-                    if (parentCard) {
-                        const text = parentCard.querySelector('.percentage-text');
-                        if (text) {
-                            text.classList.remove('text-cyan-400');
-                            text.classList.add('text-green-400');
-                            text.innerHTML = '<i class="fa-solid fa-check"></i> 100% Completado';
-                        }
-                    }
+        // B. Animar Contadores
+        const counters = document.querySelectorAll('.counter-anim');
+        counters.forEach(counter => {
+            const target = +counter.getAttribute('data-target');
+            if (target === 0) return;
+
+            const duration = 2000;
+            const increment = target / (duration / 16);
+
+            let current = 0;
+            const updateCounter = () => {
+                current += increment;
+                if (current < target) {
+                    counter.innerText = Math.ceil(current);
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    counter.innerText = target;
                 }
-            }, delay);
+            };
+            updateCounter();
         });
     });
 </script>

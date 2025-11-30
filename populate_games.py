@@ -1,102 +1,53 @@
 import os
 import django
+from datetime import date
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'gg_rewards.settings')
 django.setup()
 
 from apps.games.models import Game
-from datetime import date
 
 def populate_games():
     games_data = [
-        {
-            "title": "Cyberpunk 2077",
-            "description": "Cyberpunk 2077 es una historia de acción y aventura de mundo abierto ambientada en Night City, una megalópolis obsesionada con el poder, el glamour y la modificación corporal.",
-            "image_url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1091500/library_600x900.jpg",
-            "link_url": "https://store.steampowered.com/app/1091500/Cyberpunk_2077/",
-            "genre": "RPG",
-            "rating": 4.8,
-            "release_date": date(2020, 12, 10),
-            "price": 20.99,
-            "discount": 65
-        },
-        {
-            "title": "Hollow Knight: Silksong",
-            "description": "¡Descubre un vasto reino embrujado en Hollow Knight: Silksong! La secuela de la galardonada aventura de acción.",
-            "image_url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1030300/library_600x900.jpg",
-            "link_url": "https://store.steampowered.com/app/1030300/Hollow_Knight_Silksong/",
-            "genre": "Metroidvania",
-            "rating": 4.9,
-            "release_date": date(2024, 1, 1),
-            "price": 19.99,
-            "discount": 0
-        },
-        {
-            "title": "Elden Ring",
-            "description": "Levántate, Sinluz, y déjate guiar por la gracia para esgrimir el poder del Anillo de Elden y convertirte en un Señor de Elden en las Tierras Intermedias.",
-            "image_url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/library_600x900.jpg",
-            "link_url": "https://store.steampowered.com/app/1245620/ELDEN_RING/",
-            "genre": "RPG de Acción",
-            "rating": 4.9,
-            "release_date": date(2022, 2, 25),
-            "price": 59.99,
-            "discount": 0
-        },
-        {
-            "title": "God of War Ragnarök",
-            "description": "Kratos y Atreus deben viajar a cada uno de los Nueve Reinos en busca de respuestas mientras las fuerzas asgardianas se preparan para la batalla profetizada que acabará con el mundo.",
-            "image_url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2322010/library_600x900.jpg",
-            "link_url": "https://store.steampowered.com/app/2322010/God_of_War_Ragnark/",
-            "genre": "Acción y Aventura",
-            "rating": 4.9,
-            "release_date": date(2022, 11, 9),
-            "price": 47.99,
-            "discount": 20
-        },
-        {
-            "title": "Baldur's Gate 3",
-            "description": "Reúne a tu grupo y regresa a los Reinos Olvidados en una historia de compañerismo y traición, sacrificio y supervivencia, y la atracción del poder absoluto.",
-            "image_url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1086940/library_600x900.jpg",
-            "link_url": "https://store.steampowered.com/app/1086940/Baldurs_Gate_3/",
-            "genre": "RPG",
-            "rating": 4.9,
-            "release_date": date(2023, 8, 3),
-            "price": 34.99,
-            "discount": 0
-        },
-        {
-            "title": "Final Fantasy VII Rebirth",
-            "description": "El viaje hacia lo desconocido continúa. Tras escapar de la ciudad distópica de Midgar, Cloud y sus amigos se embarcan en un viaje a través del planeta.",
-            "image_url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2909400/library_600x900.jpg",
-            "link_url": "https://store.steampowered.com/app/2909400/FINAL_FANTASY_VII_REBIRTH/",
-            "genre": "RPG",
-            "rating": 4.8,
-            "release_date": date(2024, 2, 29),
-            "price": 69.99,
-            "discount": 50
-        },
-        {
-            "title": "Black Myth: Wukong",
-            "description": "Black Myth: Wukong es un juego de rol de acción basado en la mitología china. La historia se basa en Viaje al Oeste, una de las Cuatro Grandes Novelas Clásicas de la literatura china.",
-            "image_url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2358720/library_600x900.jpg",
-            "link_url": "https://store.steampowered.com/app/2358720/Black_Myth_Wukong/",
-            "genre": "RPG de Acción",
-            "rating": 4.7,
-            "release_date": date(2024, 8, 20),
-            "price": 59.99,
-            "discount": 0
-        }
+        # Acción / RPG
+        {"title": "Black Myth: Wukong", "price": 59.99, "discount": 0, "genre": "Acción", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/2358720/header.jpg"},
+        {"title": "Elden Ring", "price": 47.99, "discount": 0, "genre": "RPG", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1245620/header.jpg"},
+        {"title": "Cyberpunk 2077", "price": 44.99, "discount": 65, "genre": "RPG", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1091500/header.jpg"},
+        {"title": "God of War Ragnarök", "price": 49.99, "discount": 20, "genre": "Acción", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/2322010/header.jpg"},
+        {"title": "Final Fantasy VII Rebirth", "price": 54.99, "discount": 50, "genre": "RPG", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1462040/header.jpg"},
+        {"title": "Hollow Knight: Silksong", "price": 6.99, "discount": 0, "genre": "Metroidvania", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1030300/header.jpg"},
+        {"title": "Baldur's Gate 3", "price": 34.99, "discount": 0, "genre": "RPG", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1086940/header.jpg"},
+        
+        # FPS / Shooter
+        {"title": "Call of Duty: Black Ops 6", "price": 69.99, "discount": 0, "genre": "Shooter", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/2933620/header.jpg"},
+        {"title": "Warhammer 40,000: Space Marine 2", "price": 59.99, "discount": 0, "genre": "Shooter", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/2183900/header.jpg"},
+        {"title": "S.T.A.L.K.E.R. 2", "price": 59.99, "discount": 0, "genre": "Shooter", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1643320/header.jpg"},
+        
+        # Estrategia / Simulación
+        {"title": "Civilization VII", "price": 69.99, "discount": 0, "genre": "Estrategia", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1295660/header.jpg"},
+        {"title": "Frostpunk 2", "price": 44.99, "discount": 10, "genre": "Estrategia", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1601580/header.jpg"},
+        {"title": "Manor Lords", "price": 39.99, "discount": 25, "genre": "Estrategia", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1363080/header.jpg"},
+        
+        # Indie / Otros
+        {"title": "Hades II", "price": 29.99, "discount": 0, "genre": "Roguelike", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1145350/header.jpg"},
+        {"title": "The Plucky Squire", "price": 29.99, "discount": 0, "genre": "Aventura", "image": "https://cdn.cloudflare.steamstatic.com/steam/apps/1627570/header.jpg"},
     ]
 
     for game_data in games_data:
-        game, created = Game.objects.get_or_create(
+        game, created = Game.objects.update_or_create(
             title=game_data["title"],
-            defaults=game_data
+            defaults={
+                "price": game_data["price"],
+                "discount": game_data["discount"],
+                "genre": game_data["genre"],
+                "image_url": game_data["image"],
+                "description": f"Juego épico de {game_data['genre']}"
+            }
         )
         if created:
-            print(f"Created game: {game.title}")
+            print(f"Creado: {game.title}")
         else:
-            print(f"Game already exists: {game.title}")
+            print(f"Actualizado: {game.title} - ${game.price} (-{game.discount}%)")
 
 if __name__ == '__main__':
     populate_games()

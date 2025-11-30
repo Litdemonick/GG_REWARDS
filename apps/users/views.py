@@ -1,25 +1,14 @@
-﻿from django.shortcuts import render, redirect
+﻿
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import Profile
 from apps.games.models import Game
-from django.shortcuts import render, redirect, get_object_or_404 # Agrega get_object_or_404 arriba
 from django.urls import reverse
-from .models import Profile
 from urllib.parse import urlencode
 from apps.api_integrations.steam_service import validate_steam_openid, get_owned_games, get_game_achievements, get_steam_id, get_game_achievement_count
-
-# --- FUNCIÓN AUXILIAR PARA CALCULAR EL RANGO ---
-def calculate_rank(level):
-    """Devuelve el nombre del rango basado en el nivel del usuario"""
-    if level < 5: return "NOVATO"
-    if level < 10: return "APRENDIZ"
-    if level < 20: return "PROFESIONAL"
-    if level < 50: return "VETERANO"
-    if level < 100: return "MAESTRO"
-    return "LEYENDA"
 
 def home(request):
     top_players = Profile.objects.order_by('-xp')[:3]  # SOLO TOP 3
@@ -353,8 +342,8 @@ def sync_steam(request):
                 
                 # --- AQUÍ ESTÁ EL FILTRO MÁGICO ---
                 # Solo procesamos y guardamos el juego si tiene al menos 1 logro.
+    
                 if ach_unlocked > 0:
-                    
                     # Formato de horas
                     game['hours_played'] = round(game.get('playtime_forever', 0) / 60, 1)
                     
@@ -371,9 +360,7 @@ def sync_steam(request):
             user_profile.level = 1 + (total_xp // 1000)
             user_profile.trophies = total_trophies
             
-            # Recalcular Rango
-            user_profile.rank = calculate_rank(user_profile.level)
-            
+            # El rango se calcula automáticamente en save()
             user_profile.save()
             
             count_removed = len(all_games) - len(processed_games)

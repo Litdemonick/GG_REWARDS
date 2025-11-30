@@ -22,25 +22,7 @@ class Platform(models.Model):
         return self.get_name_display()
 
 
-class Game(models.Model):
-    '''Videojuegos'''
-    name = models.CharField(max_length=200)
-    platform = models.ForeignKey(Platform, on_delete=models.CASCADE, related_name='games')
-    external_id = models.CharField(max_length=100)
-    cover_image = models.URLField(blank=True, null=True)
-    release_date = models.DateField(blank=True, null=True)
-    description = models.TextField(blank=True)
-    
-    created_at = models.DateTimeField(auto_now_add=True)
-    
-    class Meta:
-        db_table = 'games'
-        verbose_name = 'Videojuego'
-        verbose_name_plural = 'Videojuegos'
-        unique_together = ['external_id', 'platform']
-    
-    def __str__(self):
-        return f'{self.name} ({self.platform})'
+from apps.games.models import Game
 
 
 class Trophy(models.Model):
