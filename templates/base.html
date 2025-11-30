@@ -88,16 +88,37 @@
             color: white;
         }
 
-        -webkit-background-clip: text;
-        background-clip: text;
-        -webkit-text-fill-color: transparent;
+        body {
+            background-color: transparent;
+            display: none;
+        }
+
+        /* NAVBAR CRISTAL - MODO CLARO */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* NAVBAR CRISTAL - MODO OSCURO */
+        .dark .glass-nav {
+            background: rgba(15, 23, 42, 0.7);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Gradiente de texto */
+        .text-gradient {
+            background: linear-gradient(to right, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
     </style>
 </head>
 
 <body class="antialiased selection:bg-purple-500 selection:text-white">
 
-    <nav class="absolute top-0 w-full glass-nav transition-all duration-300 z-50">
+    <nav class="fixed top-0 w-full glass-nav transition-all duration-300 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-30 px-4 py-9">
 

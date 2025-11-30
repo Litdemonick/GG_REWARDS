@@ -133,11 +133,11 @@
                         <i class="fa-solid fa-envelope"></i> {{ user.email }}
                     </p>
 
-                    <div
-                        class="w-full max-w-md bg-gray-200 dark:bg-gray-700 h-4 rounded-full overflow-hidden mb-2 relative border border-gray-300 dark:border-gray-600">
+                    <div class="w-full max-w-md bg-gray-200 dark:bg-gray-700 h-4 rounded-full overflow-hidden mb-2 relative border border-gray-300 dark:border-gray-600">
                         <div id="xp-bar-fill"
                             class="bg-gradient-to-r from-purple-500 to-cyan-500 h-full rounded-full shadow-[0_0_10px_rgba(168,85,247,0.5)] transition-all duration-[2000ms] ease-out"
-                            style="width: 0%" data-width="{{ xp_percentage|floatformat:0|default:0 }}%">
+                            style="width: 0%" 
+                            data-width="{{ xp_percentage|floatformat:0|default:0 }}%">
                         </div>
                     </div>
 
@@ -282,54 +282,68 @@
         <div class="mt-12">
             <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-3">
                 <i class="fa-brands fa-steam text-[#171a21] dark:text-[#66c0f4]"></i>
-                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90">
-                </div>
+                Tus Juegos de Steam ({{ steam_games|length }})
+            </h3>
 
-                <div class="absolute bottom-0 left-0 p-4 w-full">
-                    <h4
-                        class="font-bold text-lg text-white group-hover:text-purple-400 transition-colors truncate mb-2">
-                        {{ game.name }}</h4>
-                    <div class="flex items-center justify-between text-xs text-gray-300">
-                        <span class="bg-gray-800/80 backdrop-blur-sm px-2 py-1 rounded border border-gray-700">
-                            <i class="fa-regular fa-clock mr-1 text-cyan-400"></i> {{ game.hours_played }} h
-                        </span>
-                        <span
-                            class="text-purple-400 font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
-                            Ver Logros <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                        </span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {% for game in steam_games %}
+                <a href="{% url 'users:game_achievements' game.appid %}?game_name={{ game.name|urlencode }}"
+                    onclick="showLoader('Cargando logros de {{ game.name }}...')"
+                    class="relative group rounded-xl overflow-hidden aspect-[3/4] cursor-pointer border border-gray-200 dark:border-gray-800 hover:border-purple-500 transition-all shadow-lg hover:shadow-purple-500/20">
+
+                    <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/{{ game.appid }}/library_600x900_2x.jpg"
+                        onerror="this.src='http://media.steampowered.com/steamcommunity/public/images/apps/{{ game.appid }}/{{ game.img_icon_url }}.jpg'"
+                        alt="{{ game.name }}"
+                        class="object-cover w-full h-full group-hover:scale-110 transition-transform duration-500">
+
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90">
                     </div>
-                </div>
+
+                    <div class="absolute bottom-0 left-0 p-4 w-full">
+                        <h4
+                            class="font-bold text-lg text-white group-hover:text-purple-400 transition-colors truncate mb-2">
+                            {{ game.name }}</h4>
+                        <div class="flex items-center justify-between text-xs text-gray-300">
+                            <span class="bg-gray-800/80 backdrop-blur-sm px-2 py-1 rounded border border-gray-700">
+                                <i class="fa-regular fa-clock mr-1 text-cyan-400"></i> {{ game.hours_played }} h
+                            </span>
+                            <span
+                                class="text-purple-400 font-bold flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0">
+                                Ver Logros <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            </span>
+                        </div>
+                    </div>
                 </a>
                 {% endfor %}
+            </div>
         </div>
-    </div>
-    {% else %}
-    <div
-        class="mt-12 w-full p-8 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30 text-center">
+        {% else %}
         <div
-            class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 mb-4">
-            <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
-        </div>
-        <h4 class="text-xl font-bold text-gray-800 dark:text-white mb-2">No se encontraron juegos</h4>
-        <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-6">
-            No pudimos cargar tus juegos porque tu perfil de Steam no está vinculado o está en privado o no tienes
-            juegos con más de una hora de juego
-        </p>
+            class="mt-12 w-full p-8 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/30 text-center">
+            <div
+                class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-100 dark:bg-yellow-900/30 text-yellow-600 dark:text-yellow-400 mb-4">
+                <i class="fa-solid fa-triangle-exclamation text-2xl"></i>
+            </div>
+            <h4 class="text-xl font-bold text-gray-800 dark:text-white mb-2">No se encontraron juegos</h4>
+            <p class="text-gray-500 dark:text-gray-400 max-w-md mx-auto mb-6">
+                No pudimos cargar tus juegos porque tu perfil de Steam no está vinculado o está en privado o no tienes
+                juegos con más de una hora de juego
+            </p>
 
-        <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg max-w-lg mx-auto text-left">
-            <p class="font-bold text-blue-600 dark:text-blue-400 mb-2 text-sm">Cómo solucionarlo:</p>
-            <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-300 space-y-1">
-                <li>Vincula tu cuenta de GG_REWARDS con Steam.</li>
-                <li>Ve a tu Perfil de Steam > Modificar Perfil.</li>
-                <li>Entra en <strong>Configuración de privacidad</strong>.</li>
-                <li>Pon <strong>"Detalles de los juegos"</strong> en <strong>Público</strong>.</li>
-                <li>Recarga esta página.</li>
-            </ul>
+            <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg max-w-lg mx-auto text-left">
+                <p class="font-bold text-blue-600 dark:text-blue-400 mb-2 text-sm">Cómo solucionarlo:</p>
+                <ul class="list-disc list-inside text-sm text-gray-600 dark:text-gray-300 space-y-1">
+                    <li>Vincula tu cuenta de GG_REWARDS con Steam.</li>
+                    <li>Ve a tu Perfil de Steam > Modificar Perfil.</li>
+                    <li>Entra en <strong>Configuración de privacidad</strong>.</li>
+                    <li>Pon <strong>"Detalles de los juegos"</strong> en <strong>Público</strong>.</li>
+                    <li>Recarga esta página.</li>
+                </ul>
+            </div>
         </div>
+        {% endif %}
+
     </div>
-    {% endif %}
-
-</div>
 </div>
 
 <div id="edit-profile-modal" class="profile-modal-overlay">
