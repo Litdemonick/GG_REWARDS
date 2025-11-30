@@ -68,10 +68,13 @@ def game_list(request):
         except Profile.DoesNotExist:
             pass
 
+    all_genres = Game.objects.values_list('genre', flat=True).distinct().order_by('genre')
+
     context = {
         'games': games,
         'recommended_games': recommended_games,
         'active_filters': genre_filters,
+        'all_genres': all_genres,
         'search_query': search_query,
         'sort_by': sort_by,
         'only_discounts': only_discounts

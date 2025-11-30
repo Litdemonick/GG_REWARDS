@@ -22,17 +22,113 @@
             <!-- SIDEBAR FILTERS -->
             <aside class="w-full lg:w-1/4 space-y-6">
                 <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-700 sticky top-32 z-40">
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-filter text-purple-500"></i> Filtros
-                    </h3>
+                    class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6 sticky top-32 z-40 backdrop-blur-sm bg-opacity-90 dark:bg-opacity-90">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                            <i class="fa-solid fa-sliders text-purple-600"></i> Filtros
+                        </h3>
+                        {% if search_query or active_filters or sort_by or only_discounts == 'true' %}
+                        <a href="{% url 'games:list' %}"
+                            class="text-xs font-medium text-red-500 hover:text-red-600 transition-colors flex items-center gap-1">
+                            <i class="fa-solid fa-xmark"></i> Limpiar
+                        </a>
+                        {% endif %}
+                    </div>
 
-                    <form method="GET" action="{% url 'games:list' %}" id="filterForm">
+                    <form method="GET" action="{% url 'games:list' %}" id="filterForm" class="space-y-6">
                         <!-- Search -->
-                        <div class="mb-6">
+                        <div class="group">
                             <label
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Búsqueda</label>
-                            </button>
+                                class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Búsqueda</label>
+                            <div class="relative transition-all duration-300 transform group-focus-within:scale-105">
+                                <input type="text" name="search" value="{{ search_query|default:'' }}"
+                                    placeholder="Buscar por nombre..."
+                                    class="w-full pl-10 pr-4 py-3 border-2 border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white focus:ring-0 focus:border-purple-500 outline-none transition-all placeholder-gray-400 text-sm font-medium">
+                                <i
+                                    class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-400 group-focus-within:text-purple-500 transition-colors"></i>
+                            </div>
+                        </div>
+
+                        <!-- Genres (Checkboxes) -->
+                        <div>
+                            <label
+                                class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Géneros</label>
+                            <div class="flex flex-col gap-2 max-h-60 overflow-y-auto custom-scrollbar pr-1">
+                                {% for genre in all_genres %}
+                                <label
+                                    class="flex items-center gap-3 cursor-pointer group p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                    <div class="relative flex items-center">
+                                        {% if genre in active_filters %}
+                                        <input type="checkbox" name="genre" value="{{ genre }}"
+                                            class="w-5 h-5 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 transition-all"
+                                            checked>
+                                        {% else %}
+                                        <input type="checkbox" name="genre" value="{{ genre }}"
+                                            class="w-5 h-5 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500 dark:focus:ring-purple-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600 transition-all">
+                                        {% endif %}
+                                    </div>
+                                    <span
+                                        class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                                        {{ genre }}
+                                    </span>
+                                </label>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Sort -->
+                        <div>
+                            <label
+                                class="block text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">Ordenar
+                                por</label>
+                            <div class="relative">
+                                <select name="sort"
+                                    class="w-full pl-4 pr-10 py-2.5 border border-gray-200 dark:border-gray-700 rounded-xl bg-gray-50 dark:bg-gray-900/50 text-gray-900 dark:text-white focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 outline-none appearance-none cursor-pointer text-sm font-medium transition-all">
+                                    <option value="">Relevancia</option>
+
+                                    {% if sort_by == 'price_asc' %}
+                                    <option value="price_asc" selected>Precio: Bajo a Alto</option>
+                                    {% else %}
+                                    <option value="price_asc">Precio: Bajo a Alto</option>
+                                    {% endif %}
+
+                                    {% if sort_by == 'price_desc' %}
+                                    <option value="price_desc" selected>Precio: Alto a Bajo</option>
+                                    {% else %}
+                                    <option value="price_desc">Precio: Alto a Bajo</option>
+                                    {% endif %}
+                                </select>
+                                <i
+                                    class="fa-solid fa-chevron-down absolute right-4 top-3.5 text-gray-400 pointer-events-none text-xs"></i>
+                            </div>
+                        </div>
+
+                        <!-- Discount Toggle -->
+                        <div
+                            class="bg-purple-50 dark:bg-purple-900/20 rounded-xl p-4 border border-purple-100 dark:border-purple-900/30">
+                            <label class="flex items-center justify-between cursor-pointer group">
+                                <span
+                                    class="flex items-center gap-2 text-sm font-bold text-gray-700 dark:text-gray-200">
+                                    <i class="fa-solid fa-tag text-purple-500"></i> Solo Ofertas
+                                </span>
+                                <div class="relative">
+                                    {% if only_discounts == 'true' %}
+                                    <input type="checkbox" name="discount" value="true" class="sr-only peer" checked>
+                                    {% else %}
+                                    <input type="checkbox" name="discount" value="true" class="sr-only peer">
+                                    {% endif %}
+                                    <div
+                                        class="w-11 h-6 bg-gray-300 peer-focus:outline-none rounded-full peer dark:bg-gray-600 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-purple-600 shadow-inner">
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit"
+                            class="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold rounded-xl shadow-lg shadow-purple-500/30 hover:shadow-purple-500/50 transform hover:-translate-y-0.5 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-filter"></i> Aplicar Filtros
+                        </button>
                     </form>
                 </div>
             </aside>
@@ -51,7 +147,7 @@
                         <div
                             class="group relative bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-yellow-500 dark:hover:border-yellow-500 transition-all shadow-md hover:shadow-xl">
                             <div class="aspect-video overflow-hidden relative">
-                                <img src="{{ game.image_url }}" alt="{{ game.title }}"
+                                <img src="{{ game.image_url }}" alt="{{ game.title }}" referrerpolicy="no-referrer"
                                     class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
                                 <div
                                     class="absolute bottom-0 left-0 p-3 bg-gradient-to-t from-black/80 to-transparent w-full">
@@ -83,7 +179,7 @@
                             class="group relative bg-white dark:bg-gray-800 rounded-2xl overflow-hidden border border-gray-200 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 transition-all duration-300 hover:-translate-y-2 shadow-lg hover:shadow-2xl hover:shadow-purple-500/20">
                             <!-- Image -->
                             <div class="aspect-[3/4] overflow-hidden relative">
-                                <img src="{{ game.image_url }}" alt="{{ game.title }}"
+                                <img src="{{ game.image_url }}" alt="{{ game.title }}" referrerpolicy="no-referrer"
                                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
                                 <div
                                     class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity">
@@ -115,7 +211,6 @@
                                     <span
                                         class="text-xs font-bold px-2 py-1 rounded bg-white/10 text-white backdrop-blur-sm">{{
                                         game.genre }}</span>
-                                    {% if game.price > 0 %}
                                     <div class="text-right">
                                         {% if game.discount > 0 %}
                                         <span class="block text-gray-400 text-xs line-through">${{ game.price }}</span>
@@ -124,9 +219,6 @@
                                         <span class="text-white font-bold text-lg">${{ game.price }}</span>
                                         {% endif %}
                                     </div>
-                                    {% else %}
-                                    <span class="text-green-400 font-bold text-lg">Gratis</span>
-                                    {% endif %}
                                 </div>
 
                                 <a href="{{ game.link_url }}" target="_blank"
