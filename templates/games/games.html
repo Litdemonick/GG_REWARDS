@@ -156,11 +156,12 @@
                             </div>
                             <div class="p-3 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
                                 <span
-                                    class="text-xs font-bold px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">{{
-                                    game.genre }}</span>
+                                    class="text-xs font-bold px-2 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300">{{ game.genre }}</span>
+                                {% if game.link_url %}
                                 <a href="{{ game.link_url }}" target="_blank"
                                     class="text-purple-600 hover:text-purple-500 text-sm font-bold">Ver <i
                                         class="fa-solid fa-arrow-right"></i></a>
+                                {% endif %}
                             </div>
                         </div>
                         {% endfor %}
@@ -209,8 +210,7 @@
 
                                 <div class="flex items-center justify-between mb-3">
                                     <span
-                                        class="text-xs font-bold px-2 py-1 rounded bg-white/10 text-white backdrop-blur-sm">{{
-                                        game.genre }}</span>
+                                        class="text-xs font-bold px-2 py-1 rounded bg-white/10 text-white backdrop-blur-sm">{{ game.genre }}</span>
                                     <div class="text-right">
                                         {% if game.discount > 0 %}
                                         <span class="block text-gray-400 text-xs line-through">${{ game.price }}</span>
@@ -221,10 +221,17 @@
                                     </div>
                                 </div>
 
+                                {% if game.link_url %}
                                 <a href="{{ game.link_url }}" target="_blank"
                                     class="block w-full py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center font-bold rounded-lg hover:shadow-lg hover:shadow-purple-500/40 transition-all active:scale-95 text-sm transform hover:-translate-y-1">
                                     Jugar Ahora
                                 </a>
+                                {% else %}
+                                <button disabled
+                                    class="block w-full py-2 bg-gray-600 text-gray-400 text-center font-bold rounded-lg cursor-not-allowed text-sm">
+                                    No disponible
+                                </button>
+                                {% endif %}
                             </div>
                         </div>
                         {% endfor %}

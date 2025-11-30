@@ -23,9 +23,11 @@ def calculate_rank(level):
 
 def home(request):
     top_players = Profile.objects.order_by('-xp')[:3]  # SOLO TOP 3
+    games = Game.objects.all().order_by('-rating')[:10]
 
     return render(request, "home.html", {
         "top_players": top_players,
+        "games": games,
     })
 
 def register_view(request):
