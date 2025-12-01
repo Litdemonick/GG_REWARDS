@@ -1,5 +1,7 @@
 from django.db import models
 
+from decimal import Decimal
+
 class Game(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -11,5 +13,11 @@ class Game(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     discount = models.IntegerField(default=0, help_text="Porcentaje de descuento (0-100)")
     
+    @property
+    def sale_price(self):
+        if self.discount > 0:
+            return round(self.price * (1 - Decimal(self.discount) / 100), 2)
+        return self.price
+
     def __str__(self):
         return self.title
