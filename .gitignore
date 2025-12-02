@@ -1,0 +1,3 @@
+# Ignorar el directorio del entorno virtual
+venv_GGREWARDS_Carlos/
+.env

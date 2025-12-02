@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="relative min-h-screen pt-32 pb-20 px-4 overflow-hidden">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-purple-600/20 rounded-full mix-blend-screen filter blur-[100px] animate-pulse"></div>
+    <div class="absolute bottom-20 right-10 w-96 h-96 bg-cyan-600/20 rounded-full mix-blend-screen filter blur-[100px]"></div>
+
+    <div class='max-w-7xl mx-auto relative z-10'>
+
+        <div class='relative group bg-gray-900/60 backdrop-blur-2xl rounded-3xl border border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.5)] overflow-hidden mb-16'>
+            
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500"></div>
+            
+            <div class='flex flex-col md:flex-row items-center p-8 md:p-10 gap-8 relative z-10'>
+                <div class="relative flex-shrink-0">
+                    <div class='relative w-32 h-32 md:w-40 md:h-40 rounded-full p-1 bg-gradient-to-br from-gray-700 via-gray-500 to-gray-800 shadow-2xl'>
+                        <div class="w-full h-full rounded-full overflow-hidden border-4 border-gray-900 bg-gray-800">
+                            {% if profile.avatar %}
+                            <img src="{{ profile.avatar.url }}" class="w-full h-full object-cover hover:scale-110 transition-transform duration-700">
+                            {% else %}
+                            <div class="w-full h-full flex items-center justify-center text-5xl font-black text-gray-700 select-none">
+                                {{ view_user.username|slice:':1'|upper }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-gray-900 border border-purple-500/50 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg flex items-center gap-1 whitespace-nowrap z-20">
+                            <span class="text-purple-400 uppercase tracking-wider">Lvl</span>
+                            <span class="text-base">{{ profile.level }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center md:text-left flex-1 w-full">
+                    <h2 class='text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600 mb-2 drop-shadow-sm'>
+                        {{ view_user.username }}
+                    </h2>
+                    
+                    <div class="mb-4">
+                        <span class="text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-white/5 border border-white/10 text-gray-300">
+                            {{ profile.rank }}
+                        </span>
+                    </div>
+                    
+                    <div class="w-full max-w-lg bg-gray-800/50 h-3 rounded-full overflow-hidden mb-1 relative border border-white/5 shadow-inner mx-auto md:mx-0">
+                        <div id="public-xp-bar" 
+                             class="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-purple-600 transition-all duration-[1500ms] ease-out w-0 relative" 
+                             data-width="{{ xp_percentage }}%">
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-between max-w-lg text-[10px] font-mono font-bold text-gray-500 mx-auto md:mx-0 px-1 uppercase tracking-wider">
+                        <span class="text-cyan-400">{{ xp_progress }} XP</span>
+                        <span>{{ xp_threshold }} XP NEXT</span>
+                    </div>
+
+                    <div class="flex justify-center md:justify-start gap-8 mt-6">
+                        <div class="text-center md:text-left">
+                            <div class="text-2xl font-black text-white leading-none">{{ profile.trophies }}</div>
+                            <div class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Trofeos</div>
+                        </div>
+                        <div class="text-center md:text-left">
+                            <div class="text-2xl font-black text-white leading-none">{{ steam_games|length }}</div>
+                            <div class="text-[10px] text-gray-500 uppercase font-bold tracking-wider">Juegos</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% if steam_games %}
+        <div class="flex items-center gap-4 mb-8">
+            <h3 class="text-2xl font-bold text-white flex items-center gap-3">
+                <i class="fa-brands fa-steam text-[#66c0f4]"></i> Colección
+            </h3>
+            <div class="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent"></div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for game in steam_games %}
+            <div class="group relative h-[450px] bg-gray-900 rounded-2xl overflow-hidden border border-gray-800 shadow-lg hover:shadow-purple-500/20 hover:border-purple-500/40 transition-all duration-500 hover:-translate-y-2">
+                
+                <div class="absolute inset-0 z-0">
+                    <img src="https://cdn.cloudflare.steamstatic.com/steam/apps/{{ game.appid }}/library_600x900_2x.jpg"
+                         onerror="this.src='http://media.steampowered.com/steamcommunity/public/images/apps/{{ game.appid }}/{{ game.img_icon_url }}.jpg'"
+                         class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
+                         alt="{{ game.name }}">
+                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/80 to-transparent opacity-95 group-hover:opacity-90 transition-opacity"></div>
+                </div>
+
+                <div class="absolute top-3 right-3 z-20 bg-black/60 backdrop-blur-md border border-white/10 px-2 py-1 rounded-lg">
+                    <div class="text-xs font-mono text-cyan-300 font-bold flex items-center gap-1">
+                        <i class="fa-regular fa-clock"></i> {{ game.hours_played }}h
+                    </div>
+                </div>
+
+                <div class="absolute bottom-0 left-0 w-full p-5 z-20 flex flex-col justify-end h-full">
+                    
+                    <h4 class="text-xl font-bold text-white leading-tight mb-4 group-hover:text-purple-400 transition-colors line-clamp-2 drop-shadow-md">
+                        {{ game.name }}
+                    </h4>
+
+                    <div class="bg-gray-800/50 p-3 rounded-xl border border-white/5 backdrop-blur-sm group-hover:bg-gray-800/70 transition-colors">
+                        <div class="flex justify-between items-end mb-2">
+                            <span class="text-gray-400 font-bold text-xs flex items-center gap-1">
+                                <i class="fa-solid fa-trophy text-yellow-500"></i> Progreso
+                            </span>
+                            <span class="text-sm font-black text-white">
+                                {{ game.achievements_unlocked }} 
+                                <span class="text-gray-500">/</span>
+                                {% if game.achievements_total and game.achievements_total > 0 %}
+                                    {{ game.achievements_total }}
+                                {% else %}
+                                    <span class="text-gray-500 text-xs">--</span>
+                                {% endif %}
+                            </span>
+                        </div>
+
+                        <div class="w-full h-2 bg-gray-700/50 rounded-full overflow-hidden shadow-inner">
+                            {% if game.achievements_total and game.achievements_total > 0 %}
+                            <div class="h-full bg-gradient-to-r from-purple-600 via-pink-500 to-cyan-500 game-progress-bar transition-all duration-1000 ease-out w-0 relative"
+                                 data-width="{% widthratio game.achievements_unlocked game.achievements_total 100 %}%">
+                                 <div class="absolute top-0 left-0 w-full h-full bg-white/20 animate-pulse"></div>
+                            </div>
+                            {% else %}
+                            <div class="h-full bg-gray-700 w-0"></div>
+                            {% endif %}
+                        </div>
+
+                        <div class="text-right mt-1">
+                             {% if game.achievements_total and game.achievements_total > 0 %}
+                            <span class="text-[10px] font-bold text-cyan-400 percentage-text">
+                                {% widthratio game.achievements_unlocked game.achievements_total 100 %}% Completado
+                            </span>
+                            {% else %}
+                            <span class="text-[10px] font-bold text-gray-600">N/A</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        {% else %}
+        <div class="flex flex-col items-center justify-center py-24 text-center border-2 border-dashed border-gray-800 rounded-3xl bg-gray-900/30">
+            <i class="fa-solid fa-gamepad text-6xl text-gray-700 mb-4"></i>
+            <h3 class="text-xl font-bold text-gray-400">Sin juegos visibles</h3>
+            <p class="text-gray-600 mt-2">No se encontraron datos de Steam.</p>
+        </div>
+        {% endif %}
+
+        {% if is_own_profile %}
+        <div class="fixed bottom-8 right-8 z-50">
+            <a href="{% url 'users:profile' %}" 
+               class="group flex items-center justify-center w-14 h-14 bg-blue-600 hover:bg-blue-500 rounded-full shadow-lg hover:shadow-blue-500/50 transition-all hover:scale-110">
+                <i class="fa-solid fa-pencil text-white"></i>
+            </a>
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Barra XP Principal
+        const xpBar = document.getElementById('public-xp-bar');
+        if (xpBar) {
+            setTimeout(() => { xpBar.style.width = xpBar.getAttribute('data-width'); }, 100);
+        }
+
+        // Barras de Juegos (Animación automática)
+        const gameBars = document.querySelectorAll('.game-progress-bar');
+        gameBars.forEach(bar => {
+            const width = bar.getAttribute('data-width');
+            // Un pequeño delay aleatorio para que se vea más fluido
+            const delay = Math.floor(Math.random() * 300) + 100;
+            
+            setTimeout(() => { 
+                bar.style.width = width;
+                
+                // Si está al 100%, cambiar barra a verde Y texto a verde
+                if(width === '100%') {
+                    // Cambiar Barra
+                    bar.classList.remove('from-purple-600', 'via-pink-500', 'to-cyan-500');
+                    bar.classList.add('bg-green-500', 'shadow-[0_0_10px_rgba(34,197,94,0.5)]');
+                    
+                    // Buscar el texto de porcentaje asociado y cambiarlo a verde
+                    const parentCard = bar.closest('.group'); 
+                    if (parentCard) {
+                        const text = parentCard.querySelector('.percentage-text');
+                        if (text) {
+                            text.classList.remove('text-cyan-400');
+                            text.classList.add('text-green-400');
+                            text.innerHTML = '<i class="fa-solid fa-check"></i> 100% Completado';
+                        }
+                    }
+                }
+            }, delay);
+        });
+    });
+</script>
+{% endblock %}
