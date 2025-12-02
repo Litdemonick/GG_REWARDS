@@ -1,6 +1,6 @@
 from django.db import models
 
-from decimal import Decimal
+from decimal import Decimal, ROUND_DOWN
 
 class Game(models.Model):
     title = models.CharField(max_length=200)
@@ -16,7 +16,8 @@ class Game(models.Model):
     @property
     def sale_price(self):
         if self.discount > 0:
-            return round(self.price * (1 - Decimal(self.discount) / 100), 2)
+            discounted_price = self.price * (1 - Decimal(self.discount) / 100)
+            return discounted_price.quantize(Decimal("0.01"), rounding=ROUND_DOWN)
         return self.price
 
     def __str__(self):
